@@ -1,0 +1,43 @@
+body{
+    background-color: #161616;
+}
+#input-container{
+    display: flex;
+    align-items: flex-start;
+
+}
+.mangaCard{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#input-container .source .inputManga .okBtn{
+    margin: 10px;
+}
+.cardImg{
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.titleCard{
+    color: white;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    margin: 0;
+    text-align: center;
+}
+
+.data-container{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.data-container .mangaCard a{
+    display: block;
+    width: 100%;
+}
