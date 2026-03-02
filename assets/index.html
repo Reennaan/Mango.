@@ -6,27 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
     
 </head>
 <body>
-    <h1>Mango2 bem massa</h1>
+<div class="app-container">
+      
+      <div class="left-pane custom-scrollbar">
+        
+        
+        <section class="section">
+          <h2 class="section-title">Explore diferents database</h2>
+          <div class="search-row">
+            <div class="select-wrapper">
+              <select class="input-field source-select">
+                <option>Select the source</option>
+                <option value="anime-planet">Anime Planet</option>
+              </select>
+              <div class="select-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="search-wrapper">
+              <input type="text" placeholder="Search for mangas" class="input-field search-input">
+              <button class="search-icon" onclick="pywebview.api.fetch()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <p>Select the source you want to pull data from.</p>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <p>Once the source is selected, the list will be shown in this dropdown menu.</p>
+            </div>
+          </div>
+        </section>
 
-    <select name="source" id="">
-        <option value="anime-planet">Anime Planet</option>
-        <option value="random">Random</option>
-    </select>
 
-    <div id="input-container">
-        <input class="inputManga"type="text">
-        <button class="okBtn" onclick="pywebview.api.fetch()">OK</button>
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title popular-recents">Recents</h2>
+            <div class="header-actions">
+              
+            </div>
+          </div>
+
+          <div id="library-container" class="data-container custom-scrollbar">
+            
+          </div>
+        </section>
+
+        
+
+      
+      <div id="detail-view" class="right-pane">
+        <div class="empty-state">
+          <p>Select a manga to view details</p>
+        </div>
+      </div>
     </div>
 
     
-    <div class="data-container">
 
-
-    </div>
     
 </body>
 </html>
