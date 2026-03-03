@@ -12,6 +12,10 @@ document.querySelector( '.source-select' ).addEventListener( 'change' , function
     if(source != "Select the source"){
         document.querySelector( '.popular-recents' ).innerHTML = 'Popular on: ' + source;
     }
+    console.log(source)
+    if(source == "Anime Planet"){
+        window.pywebview.api.fetch();
+    }
     
 });
 
@@ -132,7 +136,7 @@ async function renderMangaDetails(manga) {
         
         const result = await window.pywebview.api.getChapters(manga.imgUrl, manga.href, manga.title);
         chaptersData = await window.pywebview.api.getPendingDownloadData();
-        //console.log(chaptersData)
+        console.log(chaptersData)
     } catch (e) {
         detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>error when searching for chapters</p></div>`;
         console.error("erro ao buscar capítulos:", e);
@@ -143,7 +147,8 @@ async function renderMangaDetails(manga) {
         return;
     }
 
-    const { chapters, img, title, downloadLinks } = chaptersData;
+    const { chapters, img, title, downloadLinks, desc } = chaptersData;
+    const descText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
 
     detailView.innerHTML = `
         ${extensionMarkup}
@@ -161,8 +166,8 @@ async function renderMangaDetails(manga) {
                     
                     <h1 class="manga-title-large">${title}</h1>
                     
-                    <p class="manga-desc">
-                        Hole—a dark, decrepit, and disorderly district where the strong prey on the weak and death is an ordinary occurrence—is all but befitting of the name given to it. A realm separated from law and ethics, it is a testing ground to the magic users who dominate it.
+                    <p class="manga-desc" maxlenght="551">
+                        ${descText}
                     </p>
                 </div>
                 <div class="backgorund-manga"></div>
