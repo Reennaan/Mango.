@@ -114,7 +114,7 @@ body {
 }
 
 .section {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .section-title {
@@ -259,7 +259,7 @@ body {
   object-fit: cover;
 }
 
-/* Right Pane (Details) */
+
 .right-pane {
   position: absolute;
   right: 0;
@@ -280,7 +280,7 @@ body {
   color: var(--text-secondary);
 }
 
-/* Detail Content (Injected) */
+
 .detail-bg {
   position: absolute;
   width: 100%;
@@ -414,7 +414,7 @@ body {
   font-style: italic;
 }
 
-/* Chapters Table */
+
 .chapters-section {
   flex: 1;
 }
