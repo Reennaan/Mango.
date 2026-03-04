@@ -2,6 +2,7 @@
 
 window.buildMangaInfo = buildMangaInfo;
 
+
 window.addEventListener('pywebviewready', initDownloadPage);
 window.addEventListener('DOMContentLoaded', initDownloadPage);
 
@@ -11,10 +12,9 @@ document.querySelector( '.source-select' ).addEventListener( 'change' , function
     var source = document.querySelector( '.source-select' ).value;
     if(source != "Select the source"){
         document.querySelector( '.popular-recents' ).innerHTML = 'Popular on: ' + source;
-    }
-    console.log(source)
-    if(source == "Anime Planet"){
-        window.pywebview.api.fetch();
+        window.pywebview.api.changeProvider(source);
+        document.getElementById('library-container').innerHTML = ""
+        window.pywebview.api.genericFetch();
     }
     
 });
@@ -134,9 +134,10 @@ async function renderMangaDetails(manga) {
     let chaptersData = null;
     try {
         
-        const result = await window.pywebview.api.getChapters(manga.imgUrl, manga.href, manga.title);
+        const result = await window.pywebview.api.genericGetDetails(manga.imgUrl, manga.href, manga.title);
         chaptersData = await window.pywebview.api.getPendingDownloadData();
         console.log(chaptersData)
+    
     } catch (e) {
         detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>error when searching for chapters</p></div>`;
         console.error("erro ao buscar capítulos:", e);
@@ -200,7 +201,7 @@ async function renderMangaDetails(manga) {
                     </div>
                 </div>
 
-                <div class="chapters-grid">
+                <div class="chapters-grid custom-scrollbar">
                     ${chapters.map((ch, i) => `
                         <div class="chapter-item" data-chapter-index="${i}" onclick="mangaDownloadPage('${chaptersData.chapters[i]}', '${chaptersData.downloadLinks[i]}', ${i})">
                             <div class="chapter-left">

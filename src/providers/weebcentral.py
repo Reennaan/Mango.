@@ -14,6 +14,8 @@ class WeebCentral(BaseProvider):
         #title
         #cover
         #link
+
+        
         response = self.scraper.get(self.baseUrl)
         soup = BeautifulSoup(response.text, 'html.parser')
       
@@ -82,8 +84,33 @@ class WeebCentral(BaseProvider):
     def get_chapters(self, url):
         return super().get_chapters(url)
     
-    def get_pages(self, chapter_url):
-        return super().get_pages(chapter_url)
+    def get_pages(self, chapter_url,chapter,name):
+        #pageList
+        #chapter
+        #name
+
+
+        #https://weebcentral.com/chapters/01J76XZ10114J1C4Z5J83XKWV9
+        mangaCode = chapter_url.split("/")
+
+        directUrl = f"https://weebcentral.com/chapters/{mangaCode[4]}/images?is_prev=False&current_page=1&reading_style=long_strip"
+
+
+        response = self.scraper.get(directUrl)
+        soup = BeautifulSoup(response.text, "html.parser")
+        page = soup.select("img[src]")
+        print(page)
+        pageList = [item["src"].lstrip() for item in page if item.has_attr("src")]
+        #body > main > 
+
+        result = []
+        result.append({
+            "pageList": pageList,
+            "chapter": chapter,
+            "name": name
+        })
+
+        return result
 
 
  

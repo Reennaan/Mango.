@@ -425,6 +425,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem 3rem;
   margin: 1rem;
+  overflow-x: auto;
 }
 
 .chapter-item {
