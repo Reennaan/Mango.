@@ -92,7 +92,7 @@ window.mangaDownloadPage = async function(  chapters, downloadLink , title , cha
 
     setChapterDownloadIcon(chapterIndex, true);
     try {
-        console.log(downloadLink, chapters, title)
+        //console.log(downloadLink, chapters, title)
         await window.pywebview.api.genericDownload(downloadLink,chapters,title);
         //await window.pywebview.api.downloadFile(slug, chapter);
     } catch (error) {

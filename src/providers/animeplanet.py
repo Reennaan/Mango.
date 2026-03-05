@@ -1,6 +1,7 @@
 from .base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
+import time
 
 class AnimePlanet(BaseProvider):
 
@@ -67,7 +68,7 @@ class AnimePlanet(BaseProvider):
         chaptersLinks = [item.get("href") for item in hrefs]
         parts = chaptersLinks[0].split("/")[2]
         overviewUrl = f"https://www.anime-planet.com/manga/{parts}"
-        print(overviewUrl)
+        #print(overviewUrl)
         
 
         response = self.scraper.get(overviewUrl)
@@ -101,5 +102,16 @@ class AnimePlanet(BaseProvider):
         #pageList
         #chapter
         #name
+        name = chapter_url.split("/")[2]
+        chapter = chapter_url.split("/")[4]
 
-        return super().get_pages(chapter_url)
+        uiUrl = f"https://www.anime-planet.com/manga/{name}/chapters/{chapter}"
+        self.scraper.get(uiUrl)
+        
+        fullUrl = f"https://www.anime-planet.com/api/manga/chapter/{name}/{chapter}"
+
+        response = self.scraper.get(fullUrl,headers={"Referer":uiUrl})
+        dados = response.json()
+        pageList = dados["data"]["images"]
+
+        return pageList
