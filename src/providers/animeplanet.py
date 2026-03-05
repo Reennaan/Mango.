@@ -7,3 +7,99 @@ class AnimePlanet(BaseProvider):
     
     name = "AnimePlanet"
     baseUrl = "https://www.anime-planet.com/manga/read-online/"
+
+
+    def __init__(self):
+        self.scraper = cloudscraper.create_scraper()
+        self.request_timeout = 15
+
+
+    def fetch_home(self):
+        #title
+        #cover
+        #link
+        response = self.scraper.get(self.baseUrl)
+        url = "https://www.anime-planet.com/"
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+       
+        selCover = soup.select("ul > li.card > a.tooltip > div.crop > img")
+        selLink = soup.select("ul > li.card > a.tooltip")
+        
+
+
+        results = []
+
+        for i in range(0, 10):
+            cover = selCover[i]["data-src"]
+            link = url + selLink[i]["href"].lstrip('/')
+            title = selCover[i]["alt"]
+
+            results.append({
+                "title": title,
+                "cover": cover,
+                "link": link
+
+            })
+
+        
+        return results
+
+
+
+
+        
+    def get_details(self, url):
+        #desc
+        #author
+        #chapters
+        #chaptersLinks
+
+        response = self.scraper.get(url)
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        chapter = soup.find_all("h3", class_="cardName")
+        
+      
+
+        chapterList = [item.get_text(strip=True) for item in chapter]
+        hrefs = soup.select("ul > li.card > a")
+        chaptersLinks = [item.get("href") for item in hrefs]
+        parts = chaptersLinks[0].split("/")[2]
+        overviewUrl = f"https://www.anime-planet.com/manga/{parts}"
+        print(overviewUrl)
+        
+
+        response = self.scraper.get(overviewUrl)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        element = soup.select_one("div.synopsisManga > p")
+        desc = element.get_text(" ", strip=True) if element else ""
+        desc = desc[:551]
+
+
+
+
+
+      
+        results = []
+        results.append({
+                "desc": desc,
+                "author": "not available",
+                "chapters": chapterList,
+                "chaptersLinks": chaptersLinks
+
+            })
+
+        return results
+
+
+
+        
+    def get_chapters(self, url):
+        return super().get_chapters(url)
+    def get_pages(self, chapter_url):
+        #pageList
+        #chapter
+        #name
+
+        return super().get_pages(chapter_url)

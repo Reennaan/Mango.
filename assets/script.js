@@ -1,5 +1,3 @@
-
-
 window.buildMangaInfo = buildMangaInfo;
 
 
@@ -82,18 +80,21 @@ function setChapterDownloadIcon(chapterIndex, isLoading) {
     iconContainer.innerHTML = chapterDefaultIconSvg;
 }
 
-window.mangaDownloadPage = async function(chapters, downloadLink, chapterIndex) {
+window.mangaDownloadPage = async function(  chapters, downloadLink , title , chapterIndex) {
     if (!downloadLink || Array.isArray(downloadLink)) return "";
+    console.log(downloadLink, chapters, title)
 
-    const urlStr = downloadLink.toString();
-    const parts = urlStr.split("/");
+    //const urlStr = downloadLink.toString();
+    //const parts = urlStr.split("/");
 
-    let slug = parts.slice(2).join("/").split("/")[0];
-    let chapter = parts[4];
+    //let slug = parts.slice(2).join("/").split("/")[0];
+    //let chapter = parts[4];
 
     setChapterDownloadIcon(chapterIndex, true);
     try {
-        await window.pywebview.api.downloadFile(slug, chapter);
+        console.log(downloadLink, chapters, title)
+        await window.pywebview.api.genericDownload(downloadLink,chapters,title);
+        //await window.pywebview.api.downloadFile(slug, chapter);
     } catch (error) {
         console.error("erro ao baixar capitulo:", error);
     } finally {
@@ -110,7 +111,7 @@ async function initDownloadPage() {
     const data = await window.pywebview.api.getPendingDownloadData();
     if (!data) return;
 
-    window.mangaDownloadPage(data.chapters, data.downloadLinks); 
+    window.mangaDownloadPage( data.chapters,data.downloadLinks, data.title); 
 }
 
 
@@ -134,8 +135,21 @@ async function renderMangaDetails(manga) {
     let chaptersData = null;
     try {
         
-        const result = await window.pywebview.api.genericGetDetails(manga.imgUrl, manga.href, manga.title);
-        chaptersData = await window.pywebview.api.getPendingDownloadData();
+        const withTimeout = (promise, timeoutMs, message) => Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))
+        ]);
+
+        await withTimeout(
+            window.pywebview.api.genericGetDetails(manga.imgUrl, manga.href, manga.title),
+            15000,
+            "Timeout while loading chapters."
+        );
+        chaptersData = await withTimeout(
+            window.pywebview.api.getPendingDownloadData(),
+            5000,
+            "Timeout while reading chapters data."
+        );
         console.log(chaptersData)
     
     } catch (e) {
@@ -148,8 +162,18 @@ async function renderMangaDetails(manga) {
         return;
     }
 
-    const { chapters, img, title, downloadLinks, desc } = chaptersData;
-    const descText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
+    const {
+        chapters = [],
+        img = "",
+        title = "",
+        downloadLinks = [],
+        desc = "",
+        author = ""
+    } = chaptersData || {};
+    const authorText = typeof author === "string" && author.trim() ? author : "Unknown author";
+    const rawDescText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
+    const descText = rawDescText.length > 450 ? `${rawDescText.slice(0, 450)}(...)` : rawDescText;
+
 
     detailView.innerHTML = `
         ${extensionMarkup}
@@ -164,10 +188,11 @@ async function renderMangaDetails(manga) {
                     <img src="${img}" alt="${title}" referrerPolicy="no-referrer">
                 </div>
                 <div class="manga-info">
-                    
+                    <div class="text-white/40 text-xs font-medium mb-2 uppercase tracking-widest">story & art by</div>
+                    <div class="text-4xl font-bold mb-8 text-white/80">${authorText}</div>
                     <h1 class="manga-title-large">${title}</h1>
                     
-                    <p class="manga-desc" maxlenght="551">
+                    <p class="manga-desc">
                         ${descText}
                     </p>
                 </div>
@@ -203,7 +228,7 @@ async function renderMangaDetails(manga) {
 
                 <div class="chapters-grid custom-scrollbar">
                     ${chapters.map((ch, i) => `
-                        <div class="chapter-item" data-chapter-index="${i}" onclick="mangaDownloadPage('${chaptersData.chapters[i]}', '${chaptersData.downloadLinks[i]}', ${i})">
+                        <div class="chapter-item" data-chapter-index="${i}" onclick="mangaDownloadPage('${chaptersData.chapters[i]}', '${chaptersData.downloadLinks[i]}','${chaptersData.title}')">
                             <div class="chapter-left">
                                 <div class="chapter-icons">
                                     <span class="chapter-download-icon">${chapterDefaultIconSvg}</span>

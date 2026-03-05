@@ -9,6 +9,7 @@ class WeebCentral(BaseProvider):
 
     def __init__(self):
         self.scraper = cloudscraper.create_scraper()
+        self.request_timeout = 15
 
     def fetch_home(self):
         #title
@@ -16,7 +17,7 @@ class WeebCentral(BaseProvider):
         #link
 
         
-        response = self.scraper.get(self.baseUrl)
+        response = self.scraper.get(self.baseUrl, timeout=self.request_timeout)
         soup = BeautifulSoup(response.text, 'html.parser')
       
         seltitle = soup.select("a.min-w-0 > div:nth-child(1)")
@@ -50,16 +51,16 @@ class WeebCentral(BaseProvider):
 
 
 
-        response = self.scraper.get(url)
+        response = self.scraper.get(url, timeout=self.request_timeout)
         soup = BeautifulSoup(response.text, "html.parser")
         desc  = soup.select_one("p.whitespace-pre-wrap").get_text(strip=True) 
         author = soup.select_one("ul > li:nth-child(1) > span > a").get_text(strip=True)
 
         showChapters = soup.select_one("button[hx-get]")
         showChaptersUrl = showChapters.get("hx-get")
-        print(showChaptersUrl)
+        #print(showChaptersUrl)
 
-        element = self.scraper.get(showChaptersUrl)
+        element = self.scraper.get(showChaptersUrl, timeout=self.request_timeout)
         soup2 = BeautifulSoup(element.text, "html.parser")
 
         fullChapterList = soup2.select("span.grow > span:nth-child(1)")
@@ -84,7 +85,7 @@ class WeebCentral(BaseProvider):
     def get_chapters(self, url):
         return super().get_chapters(url)
     
-    def get_pages(self, chapter_url,chapter,name):
+    def get_pages(self, chapter_url):
         #pageList
         #chapter
         #name
@@ -96,21 +97,16 @@ class WeebCentral(BaseProvider):
         directUrl = f"https://weebcentral.com/chapters/{mangaCode[4]}/images?is_prev=False&current_page=1&reading_style=long_strip"
 
 
-        response = self.scraper.get(directUrl)
+        response = self.scraper.get(directUrl, timeout=self.request_timeout)
         soup = BeautifulSoup(response.text, "html.parser")
         page = soup.select("img[src]")
-        print(page)
+        #print(page)
         pageList = [item["src"].lstrip() for item in page if item.has_attr("src")]
         #body > main > 
 
-        result = []
-        result.append({
-            "pageList": pageList,
-            "chapter": chapter,
-            "name": name
-        })
+       
 
-        return result
+        return pageList
 
 
  
