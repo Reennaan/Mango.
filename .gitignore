@@ -1,0 +1,6 @@
+dist
+build
+.settings.json
+main.spec
+mango_fixed.spec
+mango_onefile.spec

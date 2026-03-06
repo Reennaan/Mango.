@@ -483,3 +483,7 @@ body {
 .chapter-item:hover .chapter-name {
   color: #fff;
 }
+.folder-button:hover{
+  opacity: 1;
+  transform: scale(1.05);
+}

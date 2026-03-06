@@ -18,6 +18,9 @@ document.querySelector( '.source-select' ).addEventListener( 'change' , function
 });
 
 
+
+
+
 document.addEventListener('click', async function (event) {
     const folderButton = event.target.closest('.folder-button');
     if (!folderButton) return;
@@ -93,7 +96,12 @@ window.mangaDownloadPage = async function(  chapters, downloadLink , title , cha
     setChapterDownloadIcon(chapterIndex, true);
     try {
         //console.log(downloadLink, chapters, title)
+
+    
         await window.pywebview.api.genericDownload(downloadLink,chapters,title);
+        
+
+        
         //await window.pywebview.api.downloadFile(slug, chapter);
     } catch (error) {
         console.error("erro ao baixar capitulo:", error);
@@ -217,7 +225,7 @@ async function renderMangaDetails(manga) {
                         <select class="input-field donwload-selection">
                             <option>Download options</option>
                             <option>PDF</option>
-                            <option>jpeg</option>
+                            <option>JPG</option>
                             <option>EPUB</option>
                         </select>
                         <div class="select-arrow">
@@ -228,7 +236,7 @@ async function renderMangaDetails(manga) {
 
                 <div class="chapters-grid custom-scrollbar">
                     ${chapters.map((ch, i) => `
-                        <div class="chapter-item" data-chapter-index="${i}" onclick="mangaDownloadPage('${chaptersData.chapters[i]}', '${chaptersData.downloadLinks[i]}','${chaptersData.title}')">
+                        <div class="chapter-item" data-chapter-index="${i}" onclick='mangaDownloadPage(${JSON.stringify(chaptersData.chapters[i])}, ${JSON.stringify(chaptersData.downloadLinks[i])}, ${JSON.stringify(chaptersData.title)}, ${i})'>
                             <div class="chapter-left">
                                 <div class="chapter-icons">
                                     <span class="chapter-download-icon">${chapterDefaultIconSvg}</span>
@@ -242,4 +250,11 @@ async function renderMangaDetails(manga) {
             </div>
         </div>
     `;
+
+    document.querySelector(".donwload-selection").addEventListener('change', function(){
+        var downloadOptions =  document.querySelector(".donwload-selection").value;
+        downloadOptions !=  "Download options" && window.pywebview.api.changeFormat(downloadOptions)
+        console.log(downloadOptions)
+    });
+
 }
