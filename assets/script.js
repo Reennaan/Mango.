@@ -6,18 +6,57 @@ window.addEventListener('DOMContentLoaded', initDownloadPage);
 
 
 
-document.querySelector( '.source-select' ).addEventListener( 'change' , function(){
-    var source = document.querySelector( '.source-select' ).value;
-    if(source != "Select the source"){
-        document.querySelector( '.popular-recents' ).innerHTML = 'Popular on: ' + source;
-        window.pywebview.api.changeProvider(source);
-        document.getElementById('library-container').innerHTML = ""
-        window.pywebview.api.genericFetch();
+const header = document.getElementById("dropdown-header")
+const list = document.getElementById("dropdown-list")
+
+header.addEventListener("click", function () {
+
+    if(list.style.display === "block"){
+        list.style.display = "none"
+    }else{
+        list.style.display = "block"
     }
-    
-});
 
+})
 
+function changeShowText(text){
+    document.querySelector(".popular-recents").innerHTML = text
+}
+
+list.addEventListener("click", function(e){
+    const item = e.target
+    if(!item.classList.contains("dropdown-item")) return
+    const source = item.dataset.value
+    header.innerHTML = source 
+    list.style.display = "none"
+
+    if(source !== "Select the source"){
+
+        document.querySelector('.popular-recents').innerHTML = 'Popular on: ' + source
+        console.log("selected:", source)
+        window.pywebview.api.changeProvider(source)
+
+        document.getElementById('library-container').innerHTML = ""
+        window.pywebview.api.genericFetch()
+    }
+
+})
+
+function toggleDropdown(){
+    const list = document.getElementById("dropdown-list");
+
+    if(list.style.display === "block"){
+        list.style.display = "none";
+    }else{
+        list.style.display = "block";
+    }
+}
+
+document.addEventListener("click", (e)=>{
+    if(!e.target.closest(".dropdown")){
+        list.style.display = "none"
+    }
+})
 
 
 
@@ -35,6 +74,16 @@ document.addEventListener('click', async function (event) {
 });
 
 
+document.addEventListener('click', async function(event){
+    const searchBtn = event.target.closest(".search-icon");
+    if (!searchBtn) return;
+
+    const inputValue = document.querySelector(".search-input").value
+    console.log(inputValue)
+    if(inputValue != ""){
+        const searchedMango = await window.pywebview.api.search_mango(inputValue);
+    }
+})
 
 
 
@@ -69,14 +118,14 @@ const chapterDefaultIconSvg = `
 </svg>
 `;
 
-const chapterLoadingIconDataUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='currentColor' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
+const chapterLoadingIconDataUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='%23fff' stroke='%23fff' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
 
 function setChapterDownloadIcon(chapterIndex, isLoading) {
     const iconContainer = document.querySelector(`.chapter-item[data-chapter-index="${chapterIndex}"] .chapter-download-icon`);
     if (!iconContainer) return;
 
     if (isLoading) {
-        iconContainer.innerHTML = `<img src="${chapterLoadingIconDataUrl}" alt="downloading" style="width:14px;height:14px;display:block;">`;
+        iconContainer.innerHTML = `<img src="${chapterLoadingIconDataUrl}" alt="downloading"  style="width:14px;height:14px;display:block;">`;
         return;
     }
 

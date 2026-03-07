@@ -96,8 +96,12 @@ class AnimePlanet(BaseProvider):
 
 
         
-    def get_chapters(self, url):
+    def search_mango(self, url):
         return super().get_chapters(url)
+    
+
+
+    
     def get_pages(self, chapter_url):
         #pageList
         #chapter
@@ -106,6 +110,8 @@ class AnimePlanet(BaseProvider):
         chapter = chapter_url.split("/")[4]
 
         uiUrl = f"https://www.anime-planet.com/manga/{name}/chapters/{chapter}"
+        self.scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True})
+
         self.scraper.get(uiUrl)
         
         fullUrl = f"https://www.anime-planet.com/api/manga/chapter/{name}/{chapter}"

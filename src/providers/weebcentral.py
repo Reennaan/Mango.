@@ -82,8 +82,31 @@ class WeebCentral(BaseProvider):
 
         return results
     
-    def get_chapters(self, url):
-        return super().get_chapters(url)
+    def search_mango(self, name):
+        url = "https://weebcentral.com/search/simple"
+        payload = {
+            "location":"main",
+            "text": name
+        }
+        response = self.scraper.post(url,data=payload)
+        soup = BeautifulSoup(response.text, "html.parser")
+        dataImg = soup.select("img")
+        dataLink = soup.select("a")
+        link = [item["href"].lstrip() for item in dataLink]
+        title = [item["alt"].replace("cover", " ").strip() for item in dataImg]
+        cover = [item["src"].lstrip() for item in dataImg]
+
+        results = []
+
+
+        for index, t in enumerate(title):
+            results.append({
+                "title": t,
+                "cover": cover[index],
+                "link": link[index]
+            })
+
+        return results
     
     def get_pages(self, chapter_url):
         #pageList

@@ -487,3 +487,44 @@ body {
   opacity: 1;
   transform: scale(1.05);
 }
+
+.dropdown{
+    width:220px;
+    font-family:sans-serif;
+    color:white;
+    position:relative;
+}
+
+.dropdown-header{
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.dropdown-list{
+    position:absolute; 
+    top:110%;
+    left:0;
+    width:100%;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius:8px;
+    overflow:hidden;
+    display:none;
+    z-index:999;  
+    box-shadow:0 6px 20px rgba(0,0,0,0.5);
+}
+
+.dropdown-item{
+    padding:10px 14px;
+    cursor:pointer;
+}
+
+.dropdown-item:hover{
+    background:#2d2d2d;
+}

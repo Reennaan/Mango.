@@ -19,14 +19,22 @@
           <h2 class="section-title">Explore different database</h2>
           <div class="search-row">
             <div class="select-wrapper">
-              <select class="input-field source-select">
-                <option>Select the source</option>
-                <option value="Anime Planet">Anime Planet</option>
-                <option value="Weeb Central">Weeb Central</option>
-              </select>
-              <div class="select-arrow">
+              
+            <div class="dropdown">
+              <div class="dropdown-header" id="dropdown-header">
+                  Select the source
+              </div>
+
+              <div class="dropdown-list" id="dropdown-list">
+                  <div class="dropdown-item" data-value="Anime Planet">AnimePlanet</div>
+                  <div class="dropdown-item" data-value="Weeb Central">WeebCentral</div>
+              </div>
+               <div class="select-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </div>
+          </div>
+
+
             </div>
             <div class="search-wrapper">
               <input type="text" placeholder="Search for mangas" class="input-field search-input">
