@@ -86,7 +86,7 @@ body {
   height: 100%;
 }
 
-/* Scrollbar Styles */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -205,7 +205,7 @@ body {
   margin-top: 2px;
 }
 
-/* Library Grid */
+
 .data-container {
   display: flex;
   gap: 1rem;
@@ -240,7 +240,7 @@ body {
   font-size: 0.75rem;
   font-weight: 500;
   text-align: center;
-  display: none; /* Escondido no grid horizontal para o visual da imagem */
+  display: none; 
 }
 
 
@@ -381,8 +381,8 @@ body {
 }
 
 .download-options{
-  right: 2%;
-  max-width: 15rem;
+  width: 220px;
+  max-width: 220px;
 }
 
 .donwload-selection{
@@ -490,7 +490,7 @@ body {
 
 .dropdown{
     width:220px;
-    font-family:sans-serif;
+    font-family: var(--font-sans);
     color:white;
     position:relative;
 }
@@ -527,4 +527,30 @@ body {
 
 .dropdown-item:hover{
     background:#2d2d2d;
+}
+
+.app-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  min-width: 220px;
+  max-width: 80vw;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(26, 26, 26, 0.96);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 2000;
+}
+
+.app-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

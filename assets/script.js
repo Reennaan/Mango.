@@ -1,5 +1,43 @@
 window.buildMangaInfo = buildMangaInfo;
 
+window.showToast = showToast;
+
+let toastHideTimeout = null;
+
+function ensureToastElement() {
+    let toast = document.getElementById('app-toast');
+    if (toast) return toast;
+
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.className = 'app-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toast);
+
+    return toast;
+}
+
+function showToast(message) {
+    const toast = ensureToastElement();
+    const safeMessage = typeof message === 'string' ? message.trim() : String(message ?? '').trim();
+
+    if (!safeMessage) return;
+
+    toast.textContent = safeMessage;
+    toast.classList.remove('is-visible');
+    void toast.offsetWidth;
+    toast.classList.add('is-visible');
+
+    if (toastHideTimeout) {
+        clearTimeout(toastHideTimeout);
+    }
+
+    toastHideTimeout = setTimeout(() => {
+        toast.classList.remove('is-visible');
+    }, 2800);
+}
+
 
 window.addEventListener('pywebviewready', initDownloadPage);
 window.addEventListener('DOMContentLoaded', initDownloadPage);
@@ -42,6 +80,7 @@ list.addEventListener("click", function(e){
 
 })
 
+
 function toggleDropdown(){
     const list = document.getElementById("dropdown-list");
 
@@ -52,9 +91,37 @@ function toggleDropdown(){
     }
 }
 
+function initDownloadOptionsDropdown(root) {
+    const dropdown = root.querySelector('.download-dropdown');
+    if (!dropdown) return;
+
+    const header = dropdown.querySelector('.download-dropdown-header');
+    const list = dropdown.querySelector('.download-dropdown-list');
+    if (!header || !list) return;
+
+    header.addEventListener('click', function () {
+        list.style.display = list.style.display === 'block' ? 'none' : 'block';
+    });
+
+    list.addEventListener('click', function (e) {
+        const item = e.target.closest('.dropdown-item');
+        if (!item) return;
+
+        const selectedFormat = item.dataset.format;
+        if (!selectedFormat) return;
+
+        header.textContent = selectedFormat;
+        list.style.display = 'none';
+        window.pywebview.api.changeFormat(selectedFormat);
+    });
+
+}
+
 document.addEventListener("click", (e)=>{
     if(!e.target.closest(".dropdown")){
-        list.style.display = "none"
+        document.querySelectorAll(".dropdown-list").forEach((dropdownList) => {
+            dropdownList.style.display = "none";
+        });
     }
 })
 
@@ -70,6 +137,7 @@ document.addEventListener('click', async function (event) {
         //console.log(selected);
     } catch (error) {
         console.error('erro ao selecionar pasta:', error);
+        showToast('erro ao selecionar pasta:', error)
     }
 });
 
@@ -154,6 +222,7 @@ window.mangaDownloadPage = async function(  chapters, downloadLink , title , cha
         //await window.pywebview.api.downloadFile(slug, chapter);
     } catch (error) {
         console.error("erro ao baixar capitulo:", error);
+        showToast("failed to download chapter:", error)
     } finally {
         setChapterDownloadIcon(chapterIndex, false);
     }
@@ -212,6 +281,7 @@ async function renderMangaDetails(manga) {
     } catch (e) {
         detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>error when searching for chapters</p></div>`;
         console.error("erro ao buscar capítulos:", e);
+        showToast("failure when searching for chapters", e)
     }
 
     if (!chaptersData) {
@@ -270,13 +340,15 @@ async function renderMangaDetails(manga) {
                         
                         </div>
                     </div>
-                    <div class="select-wrapper download-options" style="width: 50px;">
-                        <select class="input-field donwload-selection">
-                            <option>Download options</option>
-                            <option>PDF</option>
-                            <option>JPG</option>
-                            <option>EPUB</option>
-                        </select>
+                    <div class="dropdown download-dropdown download-options">
+                        <div class="dropdown-header download-dropdown-header">
+                            Download options
+                        </div>
+                        <div class="dropdown-list download-dropdown-list">
+                            <div class="dropdown-item" data-format="PDF">PDF</div>
+                            <div class="dropdown-item" data-format="JPG">JPG</div>
+                            <div class="dropdown-item" data-format="EPUB">EPUB</div>
+                        </div>
                         <div class="select-arrow">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
@@ -300,10 +372,6 @@ async function renderMangaDetails(manga) {
         </div>
     `;
 
-    document.querySelector(".donwload-selection").addEventListener('change', function(){
-        var downloadOptions =  document.querySelector(".donwload-selection").value;
-        downloadOptions !=  "Download options" && window.pywebview.api.changeFormat(downloadOptions)
-        console.log(downloadOptions)
-    });
+    initDownloadOptionsDropdown(detailView);
 
 }
