@@ -313,6 +313,7 @@ async function renderMangaDetails(manga) {
         
     const descText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
     const descClass = descText.length > 550 ? "manga-desc custom-scrollbar has-scroll" : "manga-desc";
+    const titleText = typeof title === "string" && title.length > 45 ? `${title.slice(0, 45)}...` : title;
 
 
     detailView.innerHTML = `
@@ -333,7 +334,7 @@ async function renderMangaDetails(manga) {
                 </div>
                 <div class="manga-info">
                         
-                    <h1 class="manga-title-large">${title}</h1>
+                    <h1 class="manga-title-large">${titleText}</h1>
                     <div class="text-4xl font-bold mb-8 text-white/80 author-name">${authorText}</div>
                     <p class="${descClass}">
                         ${descText}

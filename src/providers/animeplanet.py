@@ -100,7 +100,7 @@ class AnimePlanet(BaseProvider):
         #tittle
         #cover
         #link
-        url = f"https://www.anime-planet.com/manga/all?name={name}"
+        url = f"https://www.anime-planet.com/manga/all?name={name}&has_hosted_chapters=1"
         complete = "https://www.anime-planet.com"
         response = self.scraper.get(url)
         soup = BeautifulSoup(response.text , "html.parser")
@@ -121,7 +121,7 @@ class AnimePlanet(BaseProvider):
             results.append({
                 "title": t,
                 "cover": cover[index],
-                "link": complete + link[index]
+                "link": complete + link[index] +"/chapters"
             })
 
         
