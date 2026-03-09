@@ -96,8 +96,40 @@ class AnimePlanet(BaseProvider):
 
 
         
-    def search_mango(self, url):
-        return super().get_chapters(url)
+    def search_mango(self, name):
+        #tittle
+        #cover
+        #link
+        url = f"https://www.anime-planet.com/manga/all?name={name}"
+        complete = "https://www.anime-planet.com"
+        response = self.scraper.get(url)
+        soup = BeautifulSoup(response.text , "html.parser")
+        dataTitle = soup.select("h3.cardName")
+        dataCover = soup.select(".crop > img")
+        dataLink = soup.select("ul > li.card > a")
+        
+
+        title = [item.get_text(strip=True) for item in dataTitle]
+        cover = [item["data-src"] for item in dataCover]
+        link = [item["href"] for item in dataLink]
+        
+       
+        results = []
+
+
+        for index, t in enumerate(title):
+            results.append({
+                "title": t,
+                "cover": cover[index],
+                "link": complete + link[index]
+            })
+
+        
+
+
+
+        return results
+
     
 
 
