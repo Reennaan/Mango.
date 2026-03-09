@@ -75,7 +75,7 @@ class AnimePlanet(BaseProvider):
         soup = BeautifulSoup(response.text, 'html.parser')
         element = soup.select_one("div.synopsisManga > p")
         desc = element.get_text(" ", strip=True) if element else ""
-        desc = desc[:551]
+        
 
 
 
@@ -85,7 +85,7 @@ class AnimePlanet(BaseProvider):
         results = []
         results.append({
                 "desc": desc,
-                "author": "not available",
+                "author": "",
                 "chapters": chapterList,
                 "chaptersLinks": chaptersLinks
 

@@ -276,7 +276,11 @@ async function renderMangaDetails(manga) {
             5000,
             "Timeout while reading chapters data."
         );
-        console.log(chaptersData)
+        //console.log(chaptersData)
+
+        backgroundImg = await window.pywebview.api.backgroundManga(manga.title)
+        if (typeof backgroundImg !== 'string')
+            backgroundImg = ""
     
     } catch (e) {
         detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>error when searching for chapters</p></div>`;
@@ -297,15 +301,26 @@ async function renderMangaDetails(manga) {
         desc = "",
         author = ""
     } = chaptersData || {};
-    const authorText = typeof author === "string" && author.trim() ? author : "Unknown author";
-    const rawDescText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
-    const descText = rawDescText.length > 450 ? `${rawDescText.slice(0, 450)}(...)` : rawDescText;
+    if(author === "null" || author === "not avaliable"){
+        authorText = ""
+    }else{
+        authorText = author
+    }
+        
+    
+        
+    const descText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
+    const descClass = descText.length > 550 ? "manga-desc custom-scrollbar has-scroll" : "manga-desc";
 
 
     detailView.innerHTML = `
         ${extensionMarkup}
+          <div class="backgorund-manga">
+                    <img class="manga-img" src ="${backgroundImg}">
+            </div>
+
         <div class="detail-bg">
-            <img src="${img}" alt="" referrerPolicy="no-referrer">
+            <img src="${img}" alt="" referrerPolicy="no-referrer" onerror="this.style.display='none';">
             <div class="detail-gradient"></div>
         </div>
 
@@ -315,15 +330,14 @@ async function renderMangaDetails(manga) {
                     <img src="${img}" alt="${title}" referrerPolicy="no-referrer">
                 </div>
                 <div class="manga-info">
-                    <div class="text-white/40 text-xs font-medium mb-2 uppercase tracking-widest">story & art by</div>
-                    <div class="text-4xl font-bold mb-8 text-white/80">${authorText}</div>
+                        
                     <h1 class="manga-title-large">${title}</h1>
-                    
-                    <p class="manga-desc">
+                    <div class="text-4xl font-bold mb-8 text-white/80 author-name">${authorText}</div>
+                    <p class="${descClass}">
                         ${descText}
                     </p>
                 </div>
-                <div class="backgorund-manga"></div>
+              
             </div>
 
             <div class="chapters-section">

@@ -83,6 +83,12 @@ class WeebCentral(BaseProvider):
         return results
     
     def search_mango(self, name):
+        #tittle
+        #cover
+        #link
+
+
+
         url = "https://weebcentral.com/search/simple"
         payload = {
             "location":"main",
@@ -130,6 +136,9 @@ class WeebCentral(BaseProvider):
        
 
         return pageList
+
+
+
 
 
  
