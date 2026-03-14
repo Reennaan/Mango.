@@ -52,7 +52,7 @@ class MangaDex(BaseProvider):
         #link
         
         headers = {'Authorization': f'Bearer {self.access_token}'}
-        params = {'limit':0}
+        params = {'limit':10}
 
 
         r = requests.get(f"{self.baseUrl}/manga/?includes[]=author&includes[]=artist&includes[]=cover_art",headers=headers, timeout=15 , params=params)
@@ -65,13 +65,28 @@ class MangaDex(BaseProvider):
             #print(manga)
             attrs = manga['attributes']
             cover_art = next(item for item in manga["relationships"] if item["type"] == "cover_art")
-            cover_id = cover_art["id"]
+            
             file_name = cover_art["attributes"]["fileName"]
             author = next(item for item in manga["relationships"] if item["type"] == "author")
             author_name = author["attributes"].get("name")
             description = attrs["description"].get("en") or attrs["description"].get("ja")
-            
-            title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br')    
+            title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br')
+
+
+            rc = requests.get(f"{self.baseUrl}/manga/{manga_id}/feed")
+            chapters = rc.json().get("data", [])
+
+            chapters_data = [
+                {
+                    "chapter": c["attributes"]["chapter"],
+                    "title": c["attributes"]["title"],
+                    "link": f"https://api.mangadex.org/chapter/{c['id']}"
+                }
+                for c in chapters
+                if c["attributes"]["translatedLanguage"] == "en"
+            ]
+
+
             #file_name = manga['relationships']['attributes'].get('fileName')
             #file_name = next(item for item in manga["relationships"] if item["type"] == "")
             #url to find images
@@ -85,10 +100,9 @@ class MangaDex(BaseProvider):
                 "link": f"{self.baseUrl}/manga/{manga_id}/feed",
                 "data": {
                     "author": author_name,
-                    "desc": description
+                    "desc": description,
+                    "chapters": chapters_data
                 }
-
-                
             })
 
         return results
@@ -103,6 +117,11 @@ class MangaDex(BaseProvider):
         #author
         #chapters
         #chaptersLinks
+        
+
+
+
+
         raise NotImplementedError
 
     def search_mango(self, url):
