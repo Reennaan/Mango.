@@ -156,16 +156,22 @@ document.addEventListener('click', async function(event){
 
 
 
-async function buildMangaInfo(title, imgUrl, href) {
+async function buildMangaInfo(manga) {
+    //title imgUrl href
+    //title cover link
+
     const container = document.getElementById('library-container');
     if (!container) return;
 
-    console.log(href)
+    const cover = manga.cover
+    const title = manga.title
+    const link = manga.link
+    //console.log(cover, title,link)
 
     const card = document.createElement('div');
     card.className = 'mangaCard';
     card.innerHTML = `
-        <img src="${imgUrl}" class="cardImg" alt="${title}" referrerPolicy="no-referrer">
+        <img src="${cover}" class="cardImg" alt="${title}" referrerPolicy="no-referrer">
         <h3 class="titleCard">${title}</h3>
     `;
 
@@ -174,7 +180,7 @@ async function buildMangaInfo(title, imgUrl, href) {
         document.querySelectorAll('.mangaCard').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
     
-        renderMangaDetails({ title, imgUrl, href });
+        renderMangaDetails(manga);
     };
 
     container.appendChild(card);
@@ -248,6 +254,9 @@ async function renderMangaDetails(manga) {
     const detailView = document.getElementById('detail-view');
     if (!detailView) return;
 
+    //console.log(manga.link)
+
+
     const extensionMarkup = `
         <div id="extension" style="position: absolute; top: 0; right: 0; padding: 1rem;">
             <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="z-index: 200;">
@@ -259,6 +268,7 @@ async function renderMangaDetails(manga) {
    
     detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>Loading chapters...</p></div>`;
 
+    
    
     let chaptersData = null;
     try {
@@ -269,7 +279,9 @@ async function renderMangaDetails(manga) {
         ]);
 
         await withTimeout(
-            window.pywebview.api.genericGetDetails(manga.imgUrl, manga.href, manga.title),
+            //title, cover, link
+            
+            window.pywebview.api.genericGetDetails(manga),
             15000,
             "Timeout while loading chapters."
         );

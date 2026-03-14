@@ -1,5 +1,4 @@
 import os
-
 from .base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
@@ -31,9 +30,12 @@ class MangaDex(BaseProvider):
         
     def auth(self):
         #rint(os.getenv('MANGADEX_CLIENT_ID'))
+
        
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        r = requests.post("https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token",headers=headers,data=self.params , timeout=15)
+        r = requests.post("https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token",headers=headers, data=self.params , timeout=15)
+
+        r.raise_for_status() 
 
         self.access_token = r.json()['access_token']
         self.refresh_token = r.json()['refresh_token']
@@ -50,15 +52,14 @@ class MangaDex(BaseProvider):
         #link
         
         headers = {'Authorization': f'Bearer {self.access_token}'}
-        params = {'limit':1}
+        params = {'limit':0}
 
 
         r = requests.get(f"{self.baseUrl}/manga/?includes[]=author&includes[]=artist&includes[]=cover_art",headers=headers, timeout=15 , params=params)
         data = r.json()
         mangaList = data.get('data', [])
-#
         results = []
-#
+
         for manga in mangaList:
             manga_id = manga["id"]
             #print(manga)
@@ -89,10 +90,6 @@ class MangaDex(BaseProvider):
 
                 
             })
-
-
-
-            
 
         return results
 
