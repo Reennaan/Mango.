@@ -2,6 +2,11 @@ from .base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
 import time
+from playwright.async_api import async_playwright
+from providers.browsermanager import BrowserManager
+import random
+from fake_useragent import UserAgent
+import asyncio
 
 class AnimePlanet(BaseProvider):
 
@@ -102,7 +107,31 @@ class AnimePlanet(BaseProvider):
         #link
         url = f"https://www.anime-planet.com/manga/all?name={name}&has_hosted_chapters=1"
         complete = "https://www.anime-planet.com"
-        response = self.scraper.get(url)
+        
+        self.scraper.get(complete)
+
+
+        ua = UserAgent()
+        fakeUa = ua.random
+
+
+        headers = {
+            "Referer": complete, 
+            "User-Agent": fakeUa,
+            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Connection": "keep-alive"
+        }
+
+
+
+
+
+        response = self.scraper.get(url, headers=headers)
+        if "cf-browser-verification" in response.text:
+            print("Cloudflare block detectado")
+            print(response.status_code)
+
         soup = BeautifulSoup(response.text , "html.parser")
         dataTitle = soup.select("h3.cardName")
         dataCover = soup.select(".crop > img")
@@ -125,31 +154,42 @@ class AnimePlanet(BaseProvider):
             })
 
         
-
-
-
         return results
 
     
 
 
-    
+  
+
     def get_pages(self, chapter_url):
-        #pageList
-        #chapter
-        #name
+
         name = chapter_url.split("/")[2]
         chapter = chapter_url.split("/")[4]
 
         uiUrl = f"https://www.anime-planet.com/manga/{name}/chapters/{chapter}"
-        self.scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True})
+        apiUrl = f"https://www.anime-planet.com/api/manga/chapter/{name}/{chapter}"
+
+        
 
         self.scraper.get(uiUrl)
-        
-        fullUrl = f"https://www.anime-planet.com/api/manga/chapter/{name}/{chapter}"
 
-        response = self.scraper.get(fullUrl,headers={"Referer":uiUrl})
-        dados = response.json()
-        pageList = dados["data"]["images"]
+        r = self.scraper.get(apiUrl, headers={"Referer": uiUrl})
 
-        return pageList
+        data = r.json()
+
+        hashes = data["data"]["images"]
+        #print(data)
+
+       
+
+        pages = []
+
+        for url in data['data']['images']:
+            pages.append(url)
+
+        print(pages)
+        return pages
+    ##chapterReader > div.ChapterReader--readerArea
+
+    #https://cdn.anime-planet.com/images/hosted-chapters/mangaup/164/14826/6454fc54989f39fc7771db9702391d75fe5a0386.jpg
+    #https://cdn.anime-planet.com/images/hosted-chapters/mangaup/164/14826/e4b066262b41771141ac1e14c9d2f0589007c5eb.jpg

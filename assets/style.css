@@ -139,7 +139,7 @@ body {
   
 }
 
-/* Search & Inputs */
+
 .search-row {
   display: flex;
   gap: 1rem;
@@ -526,6 +526,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
     font-family: var(--font-sans);
     color:white;
     position:relative;
+    
 }
 
 .dropdown-header{
