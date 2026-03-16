@@ -1,3 +1,4 @@
+import json
 import os
 from .base import BaseProvider
 import cloudscraper
@@ -59,6 +60,7 @@ class MangaDex(BaseProvider):
         data = r.json()
         mangaList = data.get('data', [])
         results = []
+        #print(len(mangaList))
 
         for manga in mangaList:
             manga_id = manga["id"]
@@ -73,19 +75,11 @@ class MangaDex(BaseProvider):
             title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br')
 
 
-            rc = requests.get(f"{self.baseUrl}/manga/{manga_id}/feed")
-            chapters = rc.json().get("data", [])
+            
 
-            chapters_data = [
-                {
-                    "chapter": c["attributes"]["chapter"],
-                    "title": c["attributes"]["title"],
-                    "link": f"https://api.mangadex.org/chapter/{c['id']}"
-                }
-                for c in chapters
-                if c["attributes"]["translatedLanguage"] == "en"
-            ]
-
+            
+            
+            
 
             #file_name = manga['relationships']['attributes'].get('fileName')
             #file_name = next(item for item in manga["relationships"] if item["type"] == "")
@@ -101,9 +95,11 @@ class MangaDex(BaseProvider):
                 "data": {
                     "author": author_name,
                     "desc": description,
-                    "chapters": chapters_data
+                    #"chapters": chapters_data
                 }
             })
+
+        #print(results)
 
         return results
 
@@ -112,17 +108,50 @@ class MangaDex(BaseProvider):
 
         
 
-    def get_details(self, url):
+    def get_details(self, manga):
         #desc
         #author
         #chapters
         #chaptersLinks
+        #print(json.dumps(manga))
+
+        rc = requests.get(manga.get("link"))
+        chapters = rc.json().get("data", [])
+        #print(chapters)
+        chapter = []
+        chaptersLinks = []
+
+        for item in chapters:
+            chapterid = item["id"]
+            chapter.append("Chapter " + item["attributes"].get("chapter"))
+            chaptersLinks.append(f"https://api.mangadex.org/at-home/server/{chapterid}")
+
+            '''
+            chapters_data = [
+                {
+                    "chapter": c["attributes"]["chapter"],
+                    "title": c["attributes"]["title"],
+                    "link": f"https://api.mangadex.org/chapter/{c['id']}"
+                }
+                for c in chapters
+                if c["attributes"]["translatedLanguage"] == "en"
+            ]
+            '''
+
+
+        result = {
+            "desc": manga["data"].get("desc"),
+            "author" : manga["data"].get("author_name"),
+            "chapters" : chapter,
+            "chapterLinks" : chaptersLinks
+        }
         
+        #print(result)
+        return result
 
 
 
-
-        raise NotImplementedError
+       
 
     def search_mango(self, url):
         #tittle

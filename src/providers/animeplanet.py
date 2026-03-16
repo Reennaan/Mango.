@@ -7,12 +7,13 @@ from providers.browsermanager import BrowserManager
 import random
 from fake_useragent import UserAgent
 import asyncio
+import re
 
 class AnimePlanet(BaseProvider):
 
     
     name = "AnimePlanet"
-    baseUrl = "https://www.anime-planet.com/manga/read-online/"
+    baseUrl = "https://www.anime-planet.com/manga/read-online/updated"
 
 
     def __init__(self):
@@ -62,13 +63,19 @@ class AnimePlanet(BaseProvider):
         #chaptersLinks
 
         response = self.scraper.get(url)
+        print(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        chapter = soup.find_all("h3", class_="cardName")
-        
       
-
-        chapterList = [item.get_text(strip=True) for item in chapter]
+        if "Provided by" in response.text:
+            chapter = soup.find_all("h3", class_="cardName")
+            #print(len(chapter))
+            chapterList = [item.get_text(strip=True) for item in chapter]
+        else:
+            chapterList = []
+        
+        
+     
         hrefs = soup.select("ul > li.card > a")
         chaptersLinks = [item.get("href") for item in hrefs]
         parts = chaptersLinks[0].split("/")[2]
@@ -105,7 +112,7 @@ class AnimePlanet(BaseProvider):
         #tittle
         #cover
         #link
-        url = f"https://www.anime-planet.com/manga/all?name={name}&has_hosted_chapters=1"
+        url = f"https://www.anime-planet.com/manga/all?name={name}"
         complete = "https://www.anime-planet.com"
         
         self.scraper.get(complete)
@@ -177,7 +184,7 @@ class AnimePlanet(BaseProvider):
 
         data = r.json()
 
-        hashes = data["data"]["images"]
+        #hashes = data["data"]["images"]
         #print(data)
 
        
@@ -187,7 +194,7 @@ class AnimePlanet(BaseProvider):
         for url in data['data']['images']:
             pages.append(url)
 
-        print(pages)
+        #print(pages)
         return pages
     ##chapterReader > div.ChapterReader--readerArea
 
