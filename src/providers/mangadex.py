@@ -47,20 +47,35 @@ class MangaDex(BaseProvider):
         
 
 
-    def fetch_home(self):
+    def fetch_home(self,name=None):
         #title
         #cover
         #link
+        #print(name)
         
         headers = {'Authorization': f'Bearer {self.access_token}'}
-        params = {'limit':10}
+        params = {
+            'limit': 10,
+            'includes[]': ['author', 'artist', 'cover_art'] 
+        }
+        
 
+        if name:
+            params = {
+                'title': name,
+                'limit': 10,
+                'includes[]': ['author', 'artist', 'cover_art'] 
+            }
+        
 
-        r = requests.get(f"{self.baseUrl}/manga/?includes[]=author&includes[]=artist&includes[]=cover_art",headers=headers, timeout=15 , params=params)
+        r = requests.get(f"{self.baseUrl}/manga",headers=headers, timeout=15 , params=params)
+        print(f"url: {r.request.url}")
+        #print(f"params: {r.request.params}")
         data = r.json()
+       
         mangaList = data.get('data', [])
         results = []
-        #print(len(mangaList))
+        #print(mangaList)
 
         for manga in mangaList:
             manga_id = manga["id"]
@@ -90,7 +105,7 @@ class MangaDex(BaseProvider):
             results.append({
                 "id": manga_id,
                 "title": title,
-                "cover": f"https://uploads.mangadex.org/covers/{manga_id}/{file_name}",
+                "cover": f"https://uploads.mangadex.org/covers/{manga_id}/{file_name}.512.jpg",
                 "link": f"{self.baseUrl}/manga/{manga_id}/feed",
                 "data": {
                     "author": author_name,
@@ -100,6 +115,7 @@ class MangaDex(BaseProvider):
             })
 
         #print(results)
+
 
         return results
 
@@ -153,13 +169,14 @@ class MangaDex(BaseProvider):
 
        
 
-    def search_mango(self, url):
+    def search_mango(self, name):
         #tittle
         #cover
         #link
+        
 
 
-        raise NotImplementedError
+        return self.fetch_home(name)
 
     def get_pages(self, chapter_url):
         #pageList
