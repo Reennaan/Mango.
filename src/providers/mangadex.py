@@ -7,6 +7,7 @@ import time
 from fake_useragent import UserAgent
 import requests
 from dotenv import load_dotenv
+from pprint import pprint
 
 class MangaDex(BaseProvider):
 
@@ -87,7 +88,9 @@ class MangaDex(BaseProvider):
             author = next(item for item in manga["relationships"] if item["type"] == "author")
             author_name = author["attributes"].get("name")
             description = attrs["description"].get("en") or attrs["description"].get("ja")
-            title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br')
+            title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br') or attrs['title'].get('zh-ro')
+            if title is None:
+                title = attrs["altTitles"].get(0)
 
 
             
@@ -108,7 +111,7 @@ class MangaDex(BaseProvider):
                 "cover": f"https://uploads.mangadex.org/covers/{manga_id}/{file_name}.512.jpg",
                 "link": f"{self.baseUrl}/manga/{manga_id}/feed",
                 "data": {
-                    "author": author_name,
+                    "author": author_name ,
                     "desc": description,
                     #"chapters": chapters_data
                 }
@@ -136,7 +139,7 @@ class MangaDex(BaseProvider):
         #print(chapters)
         chapter = []
         chaptersLinks = []
-
+        result = []
         for item in chapters:
             chapterid = item["id"]
             chapter.append("Chapter " + item["attributes"].get("chapter"))
@@ -159,11 +162,11 @@ class MangaDex(BaseProvider):
             "desc": manga["data"].get("desc"),
             "author" : manga["data"].get("author_name"),
             "chapters" : chapter,
-            "chapterLinks" : chaptersLinks
+            "chaptersLinks" : chaptersLinks
         }
         
-        #print(result)
-        return result
+        #pprint(result)
+        return [result]
 
 
 
@@ -182,4 +185,18 @@ class MangaDex(BaseProvider):
         #pageList
         #chapter
         #name
-        raise NotImplementedError
+        #pprint(chapter_url)
+
+
+        r =  requests.get(chapter_url).json()
+        chapterHash = r["chapter"].get("hash")
+        chapterData = r["chapter"].get("data")
+        dataUrl = r["baseUrl"]
+        pages = []
+        for item in chapterData:
+            pages.append(f"{dataUrl}/data/{chapterHash}/{item}")
+
+        pprint(pages)
+
+        #    https://cmdxd98sb0x3yprd.mangadex.network/data/25f8494c4b02ee11f919140f19b63e46/1-fa9ad56d985723c112e70363b5b02f7a93ba880b573a440eee59388dd791bdf3.png
+        return pages

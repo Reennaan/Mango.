@@ -1,6 +1,7 @@
 from .base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
+from pprint import pprint
 
 class WeebCentral(BaseProvider):
 
@@ -114,14 +115,14 @@ class WeebCentral(BaseProvider):
 
         return results
     
-    def get_pages(self, chapter_url):
+    def get_pages(self, manga):
         #pageList
         #chapter
         #name
-
-
+        
+        #pprint(manga)
         #https://weebcentral.com/chapters/01J76XZ10114J1C4Z5J83XKWV9
-        mangaCode = chapter_url.split("/")
+        mangaCode = manga.split("/")
 
         directUrl = f"https://weebcentral.com/chapters/{mangaCode[4]}/images?is_prev=False&current_page=1&reading_style=long_strip"
 
