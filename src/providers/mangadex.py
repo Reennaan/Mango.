@@ -65,7 +65,8 @@ class MangaDex(BaseProvider):
             params = {
                 'title': name,
                 'limit': 10,
-                'includes[]': ['author', 'artist', 'cover_art'] 
+                'includes[]': ['author', 'artist', 'cover_art'],
+                #"translatedLanguage[]": ["en"] 
             }
         
 
@@ -109,7 +110,7 @@ class MangaDex(BaseProvider):
                 "id": manga_id,
                 "title": title,
                 "cover": f"https://uploads.mangadex.org/covers/{manga_id}/{file_name}.512.jpg",
-                "link": f"{self.baseUrl}/manga/{manga_id}/feed",
+                "link": f"{self.baseUrl}/manga/{manga_id}/feed?translatedLanguage[]=en",
                 "data": {
                     "author": author_name ,
                     "desc": description,
@@ -142,7 +143,7 @@ class MangaDex(BaseProvider):
         result = []
         for item in chapters:
             chapterid = item["id"]
-            chapter.append("Chapter " + item["attributes"].get("chapter"))
+            chapter.append(f"Chapter {item['attributes'].get('chapter')}")
             chaptersLinks.append(f"https://api.mangadex.org/at-home/server/{chapterid}")
 
             '''
