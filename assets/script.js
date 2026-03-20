@@ -1,8 +1,48 @@
 window.buildMangaInfo = buildMangaInfo;
-
 window.showToast = showToast;
+window.initSources = initSources;
+document.addEventListener('DOMContentLoaded', initSources);
+
 
 let toastHideTimeout = null;
+let currentProviderName = "Weeb Central";
+
+const EXTENSIONS_CATALOG = [
+    {
+        key: "Anime Planet",
+        name: "Anime Planet",
+        category: "Extensions",
+        status: "Install"
+    },
+    {
+        key: "Weeb Central",
+        name: "Weeb Central",
+        category: "Extensions",
+        status: "Install"
+    },
+    {
+        key: "MangaDex",
+        name: "MangaDex EN",
+        category: "Extensions",
+        status: "Install"
+    }
+];
+
+
+
+function initSources(){
+    const sourceDropdown = document.querySelector(".dropdown-sources")
+    if(!sourceDropdown) return;
+    console.log(sourceDropdown)
+    sourceDropdown.innerHTML = EXTENSIONS_CATALOG.map(extension =>     
+        `
+        <div class="dropdown-item" data-value="${extension.key}">${extension.name}</div>
+        `
+    ).join('');
+
+}
+
+
 
 function ensureToastElement() {
     let toast = document.getElementById('app-toast');
@@ -38,9 +78,143 @@ function showToast(message) {
     }, 2800);
 }
 
+function getExtensionButtonMarkup() {
+    return `
+        <button type="button" class="extensions-trigger" aria-label="Open extensions">
+            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
+            </svg>
+        </button>
+    `;
+}
 
-window.addEventListener('pywebviewready', initDownloadPage);
-window.addEventListener('DOMContentLoaded', initDownloadPage);
+function getDefaultDetailMarkup(message = "Select a manga to view details") {
+    return `${getExtensionButtonMarkup()}<div class="empty-state"><p>${message}</p></div>`;
+}
+
+function clearDetailView(message = "Select a manga to view details") {
+    const detailView = document.getElementById("detail-view");
+    if (!detailView) return;
+
+    detailView.innerHTML = getDefaultDetailMarkup(message);
+}
+
+function closeExtensionPage() {
+    const container = document.querySelector(".extensionContainer");
+    if (!container) return;
+
+    container.classList.remove("is-visible");
+    container.innerHTML = "";
+}
+
+function renderExtensionCards() {
+    return EXTENSIONS_CATALOG.map((extension) => {
+        
+        
+
+        return `
+            <article class="extension-card">
+                <div class="extension-card-main">
+                    <span class="extension-dot" aria-hidden="true"></span>
+                    <div class="extension-copy">
+                        <h3>${extension.name}</h3>
+                        <p>${extension.category}</p>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="extension-action"
+                    data-provider="${extension.key}" 
+                    
+                >  
+                ${extension.status}
+                </button>
+            </article>
+        `;
+    }).join("");
+}
+
+
+document.addEventListener("click", function(event) {
+    const extensionTrigger = event.target.closest(".extensions-trigger");
+    if (extensionTrigger) {
+        event.preventDefault();
+        renderExtension();
+        return;
+    }
+
+    const closeButton = event.target.closest(".extensions-close");
+    if (closeButton) {
+        event.preventDefault();
+        closeExtensionPage();
+        return;
+    }
+
+    const sourcesTrigger = event.target.closest(".dropdown-sources");
+    if(sourcesTrigger) {
+        event.preventDefault();
+        initSources();
+        
+    }
+
+    const providerButton = event.target.closest(".extension-action[data-provider]");
+    if(!providerButton) return;
+    const dataProvider = providerButton.getAttribute("data-provider")
+    const extension = EXTENSIONS_CATALOG.find(dp => dp.key === dataProvider)
+    if(extension){
+        extension.status = (extension.status === "Install" ? "Installed" : "Install")
+        providerButton.textContent = extension.status
+    }
+    if (!providerButton || providerButton.disabled) return;
+
+    
+  
+    
+});
+
+
+
+
+
+
+document.addEventListener("click", (e)=>{
+    if(!e.target.closest(".dropdown")){
+        
+    }
+})
+
+
+
+function renderExtension() {
+    const container = document.querySelector(".extensionContainer");
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="extension-page custom-scrollbar">
+            <div class="extension-shell">
+                <div class="extension-header">
+                    <div>
+                        <h1 class="extension-title">Extensions</h1>
+                        <p class="extension-subtitle">Manage and install new manga sources.</p>
+                    </div>
+                    <button type="button" class="extensions-close" aria-label="Close extensions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"/>
+                            <path d="m6 6 12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="extension-grid">
+                    ${renderExtensionCards()}
+                </div>
+            </div>
+        </div>
+    `;
+    container.classList.add("is-visible");
+}
+
+
+
 
 
 
@@ -61,21 +235,29 @@ function changeShowText(text){
     document.querySelector(".popular-recents").innerHTML = text
 }
 
+
+function setActiveProvider(source) {
+    if (!source) return;
+
+    currentProviderName = source;
+    header.textContent = source;
+    list.style.display = "none";
+
+    changeShowText(`Popular on: ${source}`);
+    document.getElementById("library-container").innerHTML = "";
+    clearDetailView();
+
+    window.pywebview.api.changeProvider(source);
+    window.pywebview.api.genericFetch();
+}
+
 list.addEventListener("click", function(e){
     const item = e.target
     if(!item.classList.contains("dropdown-item")) return
     const source = item.dataset.value
-    header.innerHTML = source 
-    list.style.display = "none"
 
     if(source !== "Select the source"){
-
-        document.querySelector('.popular-recents').innerHTML = 'Popular on: ' + source
-        console.log("selected:", source)
-        window.pywebview.api.changeProvider(source)
-
-        document.getElementById('library-container').innerHTML = ""
-        window.pywebview.api.genericFetch()
+        setActiveProvider(source)
     }
 
 })
@@ -91,9 +273,14 @@ function toggleDropdown(){
     }
 }
 
-function initDownloadOptionsDropdown(root) {
+async function initDownloadOptionsDropdown(root) {
     const dropdown = root.querySelector('.download-dropdown');
     if (!dropdown) return;
+
+
+
+
+    
 
     const header = dropdown.querySelector('.download-dropdown-header');
     const list = dropdown.querySelector('.download-dropdown-list');
@@ -103,6 +290,17 @@ function initDownloadOptionsDropdown(root) {
         list.style.display = list.style.display === 'block' ? 'none' : 'block';
     });
 
+    const currentDownloadFormat = await window.pywebview.api.getFormat();
+    if(currentDownloadFormat && currentDownloadFormat != "Download options"){
+        window.pywebview.api.changeFormat(currentDownloadFormat);
+        header.textContent = currentDownloadFormat;
+        list.style.display = 'none';
+
+    }else{
+        header.textContent = "Download options"
+    } 
+        
+    
     list.addEventListener('click', function (e) {
         const item = e.target.closest('.dropdown-item');
         if (!item) return;
@@ -155,35 +353,47 @@ document.addEventListener('click', async function(event){
 
 
 
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeExtensionPage();
+    }
+});
+
+
+
 
 async function buildMangaInfo(manga) {
-    //title imgUrl href
-    //title cover link
+    
 
     const container = document.getElementById('library-container');
     if (!container) return;
+    try{
+        const cover = manga.cover
+        const title = manga.title
+        const link = manga.link
+        console.log(cover, title,link)
 
-    const cover = manga.cover
-    const title = manga.title
-    const link = manga.link
-    //console.log(cover, title,link)
+        const card = document.createElement('div');
+        card.className = 'mangaCard';
+        card.innerHTML = `
+            <img src="${cover}" class="cardImg" alt="${title}" referrerPolicy="no-referrer">
+            <h3 class="titleCard">${title}</h3>
+        `;
 
-    const card = document.createElement('div');
-    card.className = 'mangaCard';
-    card.innerHTML = `
-        <img src="${cover}" class="cardImg" alt="${title}" referrerPolicy="no-referrer">
-        <h3 class="titleCard">${title}</h3>
-    `;
-
-    card.onclick = () => {
+        card.onclick = () => {
+            
+            document.querySelectorAll('.mangaCard').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
         
-        document.querySelectorAll('.mangaCard').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-    
-        renderMangaDetails(manga);
-    };
+            renderMangaDetails(manga);
+        };
 
-    container.appendChild(card);
+        container.appendChild(card);
+    }catch (error){
+        console.error("erro ao baixar capitulo:", error);
+        showToast("failed to download chapter:", error)
+    }
+   
 }
 
 const chapterDefaultIconSvg = `
@@ -208,22 +418,31 @@ function setChapterDownloadIcon(chapterIndex, isLoading) {
     iconContainer.innerHTML = chapterDefaultIconSvg;
 }
 
-window.mangaDownloadPage = async function(  chapters, downloadLink , title , chapterIndex) {
-    if (!downloadLink || Array.isArray(downloadLink)) return "";
-    console.log(downloadLink, chapters, title)
-
+window.mangaDownloadPage = async function( ch, chaptersLinks , title,  chapterIndex) {
+    //if (!downloadLink || Array.isArray(downloadLink)) return "";
+    //console.log(downloadLink, chapters, title)
+    // chapters, downloadLink , title
     //const urlStr = downloadLink.toString();
     //const parts = urlStr.split("/");
 
     //let slug = parts.slice(2).join("/").split("/")[0];
     //let chapter = parts[4];
+    
+   
+
+    manga = {
+        "chapters": ch,
+        "chaptersLinks": chaptersLinks,
+        "title": title,
+        
+    }
 
     setChapterDownloadIcon(chapterIndex, true);
     try {
         //console.log(downloadLink, chapters, title)
 
     
-        await window.pywebview.api.genericDownload(downloadLink,chapters,title);
+        await window.pywebview.api.genericDownload(manga, chapterIndex);
         
 
         
@@ -238,38 +457,27 @@ window.mangaDownloadPage = async function(  chapters, downloadLink , title , cha
     return "";
 }
 
-async function initDownloadPage() {
-    const isDownloadPage = document.querySelector('.chaptersContainer');
-    if (!isDownloadPage || !window.pywebview?.api?.getPendingDownloadData) return;
-
-    const data = await window.pywebview.api.getPendingDownloadData();
-    if (!data) return;
-
-    window.mangaDownloadPage( data.chapters,data.downloadLinks, data.title); 
-}
-
 
 
 async function renderMangaDetails(manga) {
     const detailView = document.getElementById('detail-view');
     if (!detailView) return;
+    //vem como title, cover, link
 
     //console.log(manga.link)
 
+    const extensionMarkup = getExtensionButtonMarkup();
 
-    const extensionMarkup = `
-        <div id="extension" style="position: absolute; top: 0; right: 0; padding: 1rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="z-index: 200;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
-            </svg>
-        </div>
-    `;
+    
+   
+
+
+
+
 
    
     detailView.innerHTML = `${extensionMarkup}<div class="empty-state"><p>Loading chapters...</p></div>`;
 
-    
-   
     let chaptersData = null;
     try {
         
@@ -279,18 +487,23 @@ async function renderMangaDetails(manga) {
         ]);
 
         await withTimeout(
-            //title, cover, link
+            //title, cover, link ainda
             
             window.pywebview.api.genericGetDetails(manga),
             15000,
             "Timeout while loading chapters."
         );
+
+        //desc
+        //author
+        //chapters
+        //chaptersLinks
         chaptersData = await withTimeout(
             window.pywebview.api.getPendingDownloadData(),
             5000,
             "Timeout while reading chapters data."
         );
-        //console.log(chaptersData)
+        
 
         backgroundImg = await window.pywebview.api.backgroundManga(manga.title)
         if (typeof backgroundImg !== 'string')
@@ -311,12 +524,12 @@ async function renderMangaDetails(manga) {
         chapters = [],
         img = "",
         title = "",
-        downloadLinks = [],
+        chaptersLinks = [],
         desc = "",
         author = ""
     } = chaptersData || {};
     if(author === "null" || author === "not avaliable"){
-        authorText = ""
+        authorText = " "
     }else{
         authorText = author
     }
@@ -330,9 +543,13 @@ async function renderMangaDetails(manga) {
 
     detailView.innerHTML = `
         ${extensionMarkup}
-          <div class="backgorund-manga">
+        ${backgroundImg ? `
+            <div class="backgorund-manga">
                     <img class="manga-img" src ="${backgroundImg}">
             </div>
+            
+            `: ''}
+          
 
         <div class="detail-bg">
             <img src="${img}" alt="" referrerPolicy="no-referrer" onerror="this.style.display='none';">
@@ -347,7 +564,11 @@ async function renderMangaDetails(manga) {
                 <div class="manga-info">
                         
                     <h1 class="manga-title-large">${titleText}</h1>
-                    <div class="text-4xl font-bold mb-8 text-white/80 author-name">${authorText}</div>
+                    ${authorText ? ` 
+                         <div class="text-4xl font-bold mb-8 text-white/80 author-name">${authorText}</div>
+                        
+                        `: ''}
+                   
                     <p class="${descClass}">
                         ${descText}
                     </p>
@@ -386,7 +607,7 @@ async function renderMangaDetails(manga) {
 
                 <div class="chapters-grid custom-scrollbar">
                     ${chapters.map((ch, i) => `
-                        <div class="chapter-item" data-chapter-index="${i}" onclick='mangaDownloadPage(${JSON.stringify(chaptersData.chapters[i])}, ${JSON.stringify(chaptersData.downloadLinks[i])}, ${JSON.stringify(chaptersData.title)}, ${i})'>
+                        <div class="chapter-item" data-chapter-index="${i}" onclick='mangaDownloadPage(${JSON.stringify(ch)}, ${JSON.stringify(chaptersData.chaptersLinks[i])}, ${JSON.stringify(chaptersData.title)} , ${i})'>
                             <div class="chapter-left">
                                 <div class="chapter-icons">
                                     <span class="chapter-download-icon">${chapterDefaultIconSvg}</span>

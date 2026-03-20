@@ -87,6 +87,7 @@ body {
 .app-container {
   display: flex;
   height: 100%;
+  position: relative;
 }
 
 
@@ -279,6 +280,31 @@ body {
   /*overflow-y: auto;*/
   z-index: 100;
 
+}
+
+.extensions-trigger {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(18, 18, 18, 0.92);
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  z-index: 200;
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.extensions-trigger:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(28, 28, 28, 0.96);
+  color: #fff;
 }
 
 .empty-state {
@@ -587,4 +613,196 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 .app-toast.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+.extensionContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 350;
+  display: none;
+}
+
+.extensionContainer.is-visible {
+  display: block;
+}
+
+.extension-page {
+  position: absolute;
+  inset: 0;
+  padding: 4.25rem 4.5rem;
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.99), rgba(13, 13, 13, 1));
+}
+
+.extension-shell {
+  width: min(100%, 900px);
+  margin: 0 auto;
+}
+
+.extension-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.75rem;
+}
+
+.extension-title {
+  font-family: 'Dongle';
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.extension-subtitle {
+  margin-top: 0.5rem;
+  max-width: 30rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.extensions-close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(24, 24, 24, 0.95);
+  color: rgba(255, 255, 255, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.extensions-close:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(32, 32, 32, 1);
+  color: #fff;
+}
+
+.extension-grid {
+  display: grid;
+  grid-auto-columns: 400px;
+  
+}
+
+.extension-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 68px;
+  padding: 1rem 1.35rem;
+  margin: .6375rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #1b1b1b;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.extension-card:hover {
+  border-color: rgba(255, 255, 255, 0.11);
+  background: #202020;
+}
+
+.extension-card.is-current {
+  border-color: #E0E0E0;
+}
+
+.extension-card-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.extension-dot {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.extension-dot.is-active {
+  background: rgba(226, 226, 226, 0.616);
+  box-shadow: 0 0 14px #E0E0E0;
+}
+
+.extension-copy {
+  min-width: 0;
+}
+
+
+
+
+
+
+
+.extension-copy h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f3f3f3;
+  margin-bottom: 0.18rem;
+}
+
+.extension-copy p {
+  color: rgb(58, 58, 58);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.extension-action {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: white;
+  
+  font-weight: 10rem;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.extension-action:hover {
+  color: #E0E0E0;
+}
+
+.extension-action.is-disabled,
+.extension-action:disabled {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.22);
+  cursor: default;
+}
+
+@media (max-width: 1100px) {
+  .extension-page {
+    padding: 3.25rem 2rem;
+  }
+
+  .extension-grid {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .extension-header {
+    flex-direction: column;
+  }
+
+  .extensions-close {
+    align-self: flex-end;
+  }
+
+  .extension-card {
+    padding-inline: 1.1rem;
+  }
 }

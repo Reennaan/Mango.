@@ -77,7 +77,7 @@ class MangaDex(BaseProvider):
        
         mangaList = data.get('data', [])
         results = []
-        #print(mangaList)
+        #pprint(mangaList)
 
         for manga in mangaList:
             manga_id = manga["id"]
@@ -90,8 +90,15 @@ class MangaDex(BaseProvider):
             author_name = author["attributes"].get("name")
             description = attrs["description"].get("en") or attrs["description"].get("ja")
             title = attrs['title'].get('ja-ro') or attrs['title'].get('en') or attrs['title'].get('pt-br') or attrs['title'].get('zh-ro')
-            if title is None:
-                title = attrs["altTitles"].get(0)
+            if not title:
+                alts = attrs.get('altTitles', [])
+                title = next((alt.get('en') or alt.get('ja-ro') or alt.get('zh-ro') 
+                for alt in alts if any(k in alt for k in ['en', 'ja-ro', 'zh-ro'])), None)
+
+                    
+                if not title and alts:
+                    title = list(alts[0].values())[0]
+                        
 
 
             
