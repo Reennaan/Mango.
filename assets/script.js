@@ -5,41 +5,26 @@ document.addEventListener('DOMContentLoaded', initSources);
 
 
 let toastHideTimeout = null;
-let currentProviderName = "Weeb Central";
 
-const EXTENSIONS_CATALOG = [
-    {
-        key: "Anime Planet",
-        name: "Anime Planet",
-        category: "Extensions",
-        status: "Install"
-    },
-    {
-        key: "Weeb Central",
-        name: "Weeb Central",
-        category: "Extensions",
-        status: "Install"
-    },
-    {
-        key: "MangaDex",
-        name: "MangaDex EN",
-        category: "Extensions",
-        status: "Install"
+
+
+window.addEventListener('pywebviewready', () => {
+    initSources();
+});
+
+async function initSources(){
+    const sourceDropdown = document.querySelector(".dropdown-sources");
+    if (!sourceDropdown) return;
+    try {
+        const raw = await window.pywebview.api.get_extensions_page_data();
+        const { installed } = JSON.parse(raw);
+        const names = Object.values(installed);
+        sourceDropdown.innerHTML = names.length
+            ? names.map(e => `<div class="dropdown-item" data-value="${e.name}">${e.name}</div>`).join('')
+            : '<div class="dropdown-item" style="opacity:.4">Nenhuma extensão instalada</div>';
+    } catch(e) {
+        console.error("initSources:", e);
     }
-];
-
-
-
-function initSources(){
-    const sourceDropdown = document.querySelector(".dropdown-sources")
-    if(!sourceDropdown) return;
-    console.log(sourceDropdown)
-    sourceDropdown.innerHTML = EXTENSIONS_CATALOG.map(extension =>     
-        `
-        <div class="dropdown-item" data-value="${extension.key}">${extension.name}</div>
-        `
-    ).join('');
-
 }
 
 
@@ -107,35 +92,30 @@ function closeExtensionPage() {
     container.innerHTML = "";
 }
 
-function renderExtensionCards() {
-    return EXTENSIONS_CATALOG.map((extension) => {
-        
-        
+function renderExtensionCards(extensions) {
+    if (!extensions || !extensions.length)
+        return '<p style="color:var(--color-text-secondary);padding:24px">Nenhuma extensão encontrada.</p>';
 
-        return `
-            <article class="extension-card">
-                <div class="extension-card-main">
-                    <span class="extension-dot" aria-hidden="true"></span>
-                    <div class="extension-copy">
-                        <h3>${extension.name}</h3>
-                        <p>${extension.category}</p>
-                    </div>
+    return extensions.map((ext) => `
+        <article class="extension-card">
+            <div class="extension-card-main">
+                <span class="extension-dot" aria-hidden="true"></span>
+                <div class="extension-copy">
+                    <h3>${ext.name}</h3>
+                    <p>${ext.language ? ext.language.toUpperCase() : 'Extension'}</p>
                 </div>
-                <button
-                    type="button"
-                    class="extension-action"
-                    data-provider="${extension.key}" 
-                    
-                >  
-                ${extension.status}
-                </button>
-            </article>
-        `;
-    }).join("");
+            </div>
+            <button type="button" class="extension-action"
+                data-ext='${JSON.stringify(ext)}'
+                data-installed="${ext.is_installed}">
+                ${ext.is_installed ? 'Uninstall' : 'Install'}
+            </button>
+        </article>
+    `).join("");
 }
 
 
-document.addEventListener("click", function(event) {
+document.addEventListener("click", async function(event) {
     const extensionTrigger = event.target.closest(".extensions-trigger");
     if (extensionTrigger) {
         event.preventDefault();
@@ -153,18 +133,42 @@ document.addEventListener("click", function(event) {
     const sourcesTrigger = event.target.closest(".dropdown-sources");
     if(sourcesTrigger) {
         event.preventDefault();
-        initSources();
+       
         
     }
 
-    const providerButton = event.target.closest(".extension-action[data-provider]");
-    if(!providerButton) return;
-    const dataProvider = providerButton.getAttribute("data-provider")
-    const extension = EXTENSIONS_CATALOG.find(dp => dp.key === dataProvider)
-    if(extension){
-        extension.status = (extension.status === "Install" ? "Installed" : "Install")
-        providerButton.textContent = extension.status
+    const providerButton = event.target.closest(".extension-action[data-ext]");
+    if (!providerButton || providerButton.disabled) return;
+
+    const ext = JSON.parse(providerButton.dataset.ext);
+    const isInstalled = providerButton.dataset.installed === "true";
+    providerButton.disabled = true;
+    providerButton.textContent = isInstalled ? "Removendo..." : "Instalando...";
+
+    try {
+        let raw;
+        if (isInstalled) {
+            raw = await window.pywebview.api.uninstall_extension(ext.id);
+        } else {
+            raw = await window.pywebview.api.install_extension(JSON.stringify(ext));
+        }
+        const res = JSON.parse(raw);
+        showToast(res.message);
+        if (res.ok) {
+            
+            providerButton.dataset.installed = String(!isInstalled);
+            providerButton.textContent = isInstalled ? "Install" : "Uninstall";
+        } else {
+            providerButton.textContent = isInstalled ? "Uninstall" : "Install";
+        }
+    } catch(e) {
+        showToast("Erro inesperado.");
+        providerButton.textContent = isInstalled ? "Uninstall" : "Install";
+    } finally {
+        providerButton.disabled = false;
     }
+
+
     if (!providerButton || providerButton.disabled) return;
 
     
@@ -185,32 +189,36 @@ document.addEventListener("click", (e)=>{
 
 
 
-function renderExtension() {
+async function renderExtension() {
     const container = document.querySelector(".extensionContainer");
     if (!container) return;
 
-    container.innerHTML = `
+    // mostra loading imediatamente
+    container.innerHTML = extensionShell('<p style="color:var(--color-text-secondary);padding:24px">Carregando...</p>');
+    container.classList.add("is-visible");
+
+    try {
+        const raw = await window.pywebview.api.get_extensions_page_data();
+        const data = JSON.parse(raw);
+        container.querySelector(".extension-grid").innerHTML = renderExtensionCards(data.available);
+    } catch(e) {
+        container.querySelector(".extension-grid").innerHTML =
+            '<p style="color:var(--color-text-danger);padding:24px">Erro ao carregar extensões.</p>';
+    }
+}
+
+function extensionShell(gridContent) {
+    return `
         <div class="extension-page custom-scrollbar">
             <div class="extension-shell">
                 <div class="extension-header">
-                    <div>
-                        <h1 class="extension-title">Extensions</h1>
-                        <p class="extension-subtitle">Manage and install new manga sources.</p>
-                    </div>
-                    <button type="button" class="extensions-close" aria-label="Close extensions">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"/>
-                            <path d="m6 6 12 12"/>
-                        </svg>
-                    </button>
+                    <div><h1 class="extension-title">Extensions</h1>
+                    <p class="extension-subtitle">Manage and install new manga sources.</p></div>
+                    <button type="button" class="extensions-close" aria-label="Close extensions">✕</button>
                 </div>
-                <div class="extension-grid">
-                    ${renderExtensionCards()}
-                </div>
+                <div class="extension-grid">${gridContent}</div>
             </div>
-        </div>
-    `;
-    container.classList.add("is-visible");
+        </div>`;
 }
 
 
