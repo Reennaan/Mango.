@@ -38,7 +38,7 @@ def fetch_available_extensions():
     try:
         return json.loads(_http_get(INDEX_URL))
     except Exception as exc:
-        print(f"[ExtensionManager] Indice indisponivel: {exc}")
+        print(f"[ExtensionManager] index not avaliable: {exc}")
         return []
 
 def get_installed_extensions():
@@ -48,12 +48,12 @@ def install_extension(ext):
     ext_id = ext.get("id", "")
     file_url = ext.get("file_url", "")
     if not ext_id or not file_url:
-        return False, "Extensao sem 'id' ou 'file_url'."
+        return False, "extension without 'id' or 'file_url'."
     dest = EXTENSIONS_DIR / f"{ext_id}.py"
     try:
         code = _http_get(file_url)
     except Exception as exc:
-        return False, f"Falha ao baixar: {exc}"
+        return False, f"failed to download: {exc}"
     try:
         dest.write_text(code, encoding="utf-8")
     except Exception as exc:
@@ -65,7 +65,7 @@ def install_extension(ext):
                          "file": str(dest)}
     _save_installed(installed)
     _reload_module(ext_id)
-    return True, f"'{ext.get('name', ext_id)}' instalada com sucesso"
+    return True, f"'{ext.get('name', ext_id)}' successfully installed"
 
 def uninstall_extension(ext_id):
     dest = EXTENSIONS_DIR / f"{ext_id}.py"
@@ -74,11 +74,11 @@ def uninstall_extension(ext_id):
         try:
             dest.unlink()
         except Exception as exc:
-            return False, f"não foi possível deletar os arquivos: {exc}"
+            return False, f"was not possible delete the files: {exc}"
     installed = _load_installed()
     name = installed.pop(ext_id, {}).get("name", ext_id)
     _save_installed(installed)
-    return True, f"'{name}' desinstalada."
+    return True, f"'{name}' uninstalled"
 
 def load_all_providers():
     try:
@@ -113,7 +113,7 @@ def _load_provider_instance(ext_id, base_class):
         sys.modules[mod_name] = module
         spec.loader.exec_module(module)
     except Exception as exc:
-        print(f"[ExtensionManager] ero ao carregar '{ext_id}': {exc}")
+        print(f"[ExtensionManager] failed to load  '{ext_id}': {exc}")
         return None
     for attr_name in dir(module):
         obj = getattr(module, attr_name)
