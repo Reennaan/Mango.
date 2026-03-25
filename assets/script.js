@@ -149,8 +149,10 @@ document.addEventListener("click", async function(event) {
         let raw;
         if (isInstalled) {
             raw = await window.pywebview.api.uninstall_extension(ext.id);
+            initSources();
         } else {
             raw = await window.pywebview.api.install_extension(JSON.stringify(ext));
+            initSources();
         }
         const res = JSON.parse(raw);
         showToast(res.message);
@@ -460,6 +462,7 @@ window.mangaDownloadPage = async function( ch, chaptersLinks , title,  chapterIn
         showToast("failed to download chapter:", error)
     } finally {
         setChapterDownloadIcon(chapterIndex, false);
+        showToast(`${manga.title} chapter ${ch} is avaliable now`)
     }
 
     return "";
