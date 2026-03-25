@@ -1,4 +1,5 @@
-from .base import BaseProvider
+
+from plugins.base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
 from pprint import pprint

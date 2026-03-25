@@ -1,9 +1,9 @@
-from .base import BaseProvider
+from plugins.base import BaseProvider
 import cloudscraper
 from bs4 import BeautifulSoup
 import time
 from playwright.async_api import async_playwright
-from providers.browsermanager import BrowserManager
+
 import random
 from fake_useragent import UserAgent
 import asyncio

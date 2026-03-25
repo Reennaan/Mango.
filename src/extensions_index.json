@@ -1,0 +1,35 @@
+[
+  {
+    "id": "weebcentral",
+    "name": "WeebCentral",
+    "version": "1.0.0",
+    "description": "",
+    "language": "en",
+    "nsfw": false,
+    "icon": "https://weebcentral.com/favicon.ico",
+    "file_url": "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/plugins/weebcentral.py"
+  },
+  {
+    "id": "mangadex",
+    "name": "MangaDex",
+    "version": "1.0.0",
+    "description": "one of the largest collections of manga",
+    "language": "en",
+    "nsfw": false,
+    "icon": "https://mangadex.org/favicon.ico",
+    "file_url": "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/plugins/mangadex.py"
+  },
+  {
+   "id": "animeplanet",
+    "name": "AnimePlanet",
+    "version": "1.0.0",
+    "description": "",
+    "language": "en",
+    "nsfw": false,
+    "icon": "https://www.anime-planet.com/favicon.ico",
+    "file_url": "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/plugins/animeplanet.py"
+
+    }
+
+
+]
