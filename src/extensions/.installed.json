@@ -5,19 +5,5 @@
     "version": "1.0.0",
     "description": "",
     "file": "D:\\projetos\\mango2\\src\\extensions\\animeplanet.py"
-  },
-  "weebcentral": {
-    "id": "weebcentral",
-    "name": "WeebCentral",
-    "version": "1.0.0",
-    "description": "",
-    "file": "D:\\projetos\\mango2\\src\\extensions\\weebcentral.py"
-  },
-  "mangadex": {
-    "id": "mangadex",
-    "name": "MangaDex",
-    "version": "1.0.0",
-    "description": "one of the largest collections of manga",
-    "file": "D:\\projetos\\mango2\\src\\extensions\\mangadex.py"
   }
 }
