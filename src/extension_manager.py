@@ -1,4 +1,4 @@
-import os, sys, json, importlib.util, importlib
+import os, sys, json, importlib.util, importlib, logging
 
 from pathlib import Path
 
@@ -8,10 +8,24 @@ except ImportError:
     import urllib.request as _urllib
     requests = None
 
-EXTENSIONS_DIR = Path(__file__).parent / "extensions"
+# usa o diretório do executável, não do source
+_BASE = Path(sys.executable).resolve().parent if (
+    "__compiled__" in globals() or getattr(sys, "frozen", False)
+) else Path(__file__).resolve().parent
+
+EXTENSIONS_DIR = _BASE / "extensions"
 EXTENSIONS_DIR.mkdir(exist_ok=True)
 INSTALLED_FILE = EXTENSIONS_DIR / ".installed.json"
 INDEX_URL = "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/extensions_index.json"
+
+
+logging.basicConfig(
+    filename='app.log',
+    filemode='a',       
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.DEBUG
+)
+
 
 
 def _http_get(url: str, timeout: int = 10) -> str:
@@ -53,10 +67,13 @@ def install_extension(ext):
     try:
         code = _http_get(file_url)
     except Exception as exc:
+        logging.error(f"failed to download: {exc}")
         return False, f"failed to download: {exc}"
+        
     try:
         dest.write_text(code, encoding="utf-8")
     except Exception as exc:
+        logging.error(f"Falha ao salvar arquivo: {exc}")
         return False, f"Falha ao salvar arquivo: {exc}"
     installed = _load_installed()
     installed[ext_id] = {"id": ext_id, "name": ext.get("name", ext_id),
@@ -65,6 +82,7 @@ def install_extension(ext):
                          "file": str(dest)}
     _save_installed(installed)
     _reload_module(ext_id)
+    logging.info(f"'{ext.get('name', ext_id)}' successfully installed")
     return True, f"'{ext.get('name', ext_id)}' successfully installed"
 
 def uninstall_extension(ext_id):
@@ -74,6 +92,7 @@ def uninstall_extension(ext_id):
         try:
             dest.unlink()
         except Exception as exc:
+            logging.info(f"was not possible delete the files: {exc}")
             return False, f"was not possible delete the files: {exc}"
     installed = _load_installed()
     name = installed.pop(ext_id, {}).get("name", ext_id)
@@ -104,16 +123,28 @@ def _module_name(ext_id):
 
 def _load_provider_instance(ext_id, base_class):
     py_file = EXTENSIONS_DIR / f"{ext_id}.py"
+    print(f"[loader] carregando {ext_id} de {py_file}")
+    print(f"[loader] arquivo existe: {py_file.exists()}")
+    logging.info(f"[loader] carregando {ext_id} de {py_file}")
+    logging.info(f"[loader] arquivo existe: {py_file.exists()}")
     if not py_file.exists():
         return None
+    src_dir = str(Path(__file__).resolve().parent)
+    if src_dir not in sys.path:
+        sys.path.insert(0, src_dir)
     mod_name = _module_name(ext_id)
     try:
         spec = importlib.util.spec_from_file_location(mod_name, py_file)
         module = importlib.util.module_from_spec(spec)
         sys.modules[mod_name] = module
         spec.loader.exec_module(module)
+        print(f"[loader] {ext_id} carregado, atributos: {[a for a in dir(module) if not a.startswith('_')]}")
+        logging.info(f"[loader] {ext_id} carregado, atributos: {[a for a in dir(module) if not a.startswith('_')]}")
     except Exception as exc:
         print(f"[ExtensionManager] failed to load  '{ext_id}': {exc}")
+        print(f"[loader] ERRO ao carregar '{ext_id}': {exc}")
+        logging.info(f"[ExtensionManager] failed to load  '{ext_id}': {exc}")
+        logging.info(f"[loader] ERRO ao carregar '{ext_id}': {exc}")
         return None
     for attr_name in dir(module):
         obj = getattr(module, attr_name)

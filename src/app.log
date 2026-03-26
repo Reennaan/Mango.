@@ -1,0 +1,539 @@
+2026-03-26 02:41:46,786 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 02:41:46,787 - INFO - [loader] arquivo existe: False
+2026-03-26 02:41:46,787 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 02:41:46,787 - INFO - [loader] arquivo existe: False
+2026-03-26 02:41:46,788 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 02:41:46,788 - INFO - [loader] arquivo existe: False
+2026-03-26 02:41:46,788 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 02:41:46,789 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 02:41:46,789 - INFO - index existe: True
+2026-03-26 02:41:47,374 - DEBUG - Using WinForms / Chromium
+2026-03-26 02:41:48,938 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:41:48,938 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:41:48,998 - DEBUG - _pywebviewready event fired
+2026-03-26 02:41:49,058 - DEBUG - loaded event fired
+2026-03-26 02:41:51,050 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:41:51,050 - INFO - providers disponíveis: []
+2026-03-26 02:41:51,050 - INFO - [changeProvider] provider 'AnimePlanet' não encontrado. Disponíveis: []
+2026-03-26 02:41:51,053 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 143, in genericFetch
+    mangas = self.currentProvider.fetch_home()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetch_home'
+
+2026-03-26 02:42:05,725 - INFO - changeProvider chamado com: 'WeebCentral'
+2026-03-26 02:42:05,725 - INFO - providers disponíveis: []
+2026-03-26 02:42:05,725 - INFO - [changeProvider] provider 'WeebCentral' não encontrado. Disponíveis: []
+2026-03-26 02:42:05,726 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 143, in genericFetch
+    mangas = self.currentProvider.fetch_home()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetch_home'
+
+2026-03-26 02:42:08,355 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:42:08,356 - INFO - providers disponíveis: []
+2026-03-26 02:42:08,356 - INFO - [changeProvider] provider 'MangaDex' não encontrado. Disponíveis: []
+2026-03-26 02:42:08,356 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 143, in genericFetch
+    mangas = self.currentProvider.fetch_home()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetch_home'
+
+2026-03-26 02:42:17,142 - INFO - 'AnimePlanet' successfully installed
+2026-03-26 02:42:17,143 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 02:42:17,143 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:17,219 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 02:42:18,262 - INFO - 'MangaDex' successfully installed
+2026-03-26 02:42:18,264 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 02:42:18,264 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:18,266 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 02:42:18,297 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 02:42:18,297 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:18,302 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 02:42:19,165 - INFO - 'WeebCentral' successfully installed
+2026-03-26 02:42:19,177 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 02:42:19,177 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:19,178 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 02:42:19,206 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 02:42:19,206 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:19,209 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 02:42:19,237 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 02:42:19,237 - INFO - [loader] arquivo existe: True
+2026-03-26 02:42:19,242 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 02:42:25,483 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:42:25,483 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:42:25,484 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 143, in genericFetch
+    mangas = self.currentProvider.fetch_home()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetch_home'
+
+2026-03-26 02:45:37,694 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 02:45:37,695 - INFO - [loader] arquivo existe: True
+2026-03-26 02:45:37,705 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 02:45:37,727 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 02:45:37,728 - INFO - [loader] arquivo existe: True
+2026-03-26 02:45:37,744 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 02:45:37,768 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 02:45:37,768 - INFO - [loader] arquivo existe: True
+2026-03-26 02:45:37,862 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 02:45:37,888 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 02:45:37,888 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 02:45:37,888 - INFO - index existe: True
+2026-03-26 02:45:38,658 - DEBUG - Using WinForms / Chromium
+2026-03-26 02:45:40,848 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:45:40,849 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:45:40,882 - DEBUG - _pywebviewready event fired
+2026-03-26 02:45:40,957 - DEBUG - loaded event fired
+2026-03-26 02:45:46,088 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:45:46,088 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:45:46,093 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:45:48,071 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:45:51,999 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:45:51,999 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:45:52,004 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:45:52,875 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:45:57,991 - INFO - changeProvider chamado com: 'WeebCentral'
+2026-03-26 02:45:57,991 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:45:57,993 - DEBUG - Starting new HTTPS connection (1): www.anime-planet.com:443
+2026-03-26 02:45:58,566 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 02:46:05,032 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:46:05,032 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:46:05,036 - DEBUG - Starting new HTTPS connection (1): weebcentral.com:443
+2026-03-26 02:46:05,364 - DEBUG - https://weebcentral.com:443 "GET / HTTP/1.1" 200 None
+2026-03-26 02:46:13,077 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:46:13,077 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:46:13,699 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 02:46:17,385 - INFO - changeProvider chamado com: 'WeebCentral'
+2026-03-26 02:46:17,385 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:46:17,639 - DEBUG - https://weebcentral.com:443 "GET / HTTP/1.1" 200 None
+2026-03-26 02:46:20,383 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:46:20,383 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:46:20,386 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:46:21,243 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:46:28,620 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:46:29,443 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:46:29,453 - DEBUG - Starting new HTTPS connection (1): graphql.anilist.co:443
+2026-03-26 02:46:29,807 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 02:49:10,792 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:49:10,794 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:49:10,802 - DEBUG - _pywebviewready event fired
+2026-03-26 02:49:10,858 - DEBUG - loaded event fired
+2026-03-26 02:49:14,050 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:49:14,050 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:49:14,052 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:49:14,926 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:49:16,195 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:49:17,032 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:49:17,303 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 02:52:25,567 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:52:25,568 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:52:25,574 - DEBUG - _pywebviewready event fired
+2026-03-26 02:52:25,630 - DEBUG - loaded event fired
+2026-03-26 02:52:28,276 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:52:28,276 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:52:28,279 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:52:29,682 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:52:30,287 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:52:31,115 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:52:31,360 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 02:53:52,354 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:53:52,355 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:53:52,365 - DEBUG - _pywebviewready event fired
+2026-03-26 02:53:52,422 - DEBUG - loaded event fired
+2026-03-26 02:53:57,425 - INFO - changeProvider chamado com: 'WeebCentral'
+2026-03-26 02:53:57,426 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:53:57,429 - DEBUG - Resetting dropped connection: weebcentral.com
+2026-03-26 02:53:57,947 - DEBUG - https://weebcentral.com:443 "GET / HTTP/1.1" 200 None
+2026-03-26 02:53:59,534 - DEBUG - https://weebcentral.com:443 "GET /series/01K9WC2TN2PWCSVR523986CRBE/boku-no-ikezuna-konyakusha HTTP/1.1" 200 None
+2026-03-26 02:53:59,823 - DEBUG - https://weebcentral.com:443 "GET /series/01K9WC2TN2PWCSVR523986CRBE/full-chapter-list HTTP/1.1" 200 None
+2026-03-26 02:54:00,178 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 02:56:23,732 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:56:23,734 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:56:23,744 - DEBUG - _pywebviewready event fired
+2026-03-26 02:56:23,802 - DEBUG - loaded event fired
+2026-03-26 02:56:25,651 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:56:25,652 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:56:25,919 - DEBUG - https://weebcentral.com:443 "GET / HTTP/1.1" 200 None
+2026-03-26 02:56:26,761 - DEBUG - Starting new HTTPS connection (1): weebcentral.com:443
+2026-03-26 02:56:27,459 - DEBUG - https://weebcentral.com:443 "GET /series/01K9WC2TN2PWCSVR523986CRBE/boku-no-ikezuna-konyakusha HTTP/1.1" 200 None
+2026-03-26 02:56:27,534 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 176, in genericGetDetails
+    details = self.currentProvider.get_details(manga.get("link"))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\extensions\animeplanet.py", line 77, in get_details
+    parts = chaptersLinks[0].split("/")[2]
+            ~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+2026-03-26 02:57:09,494 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 02:57:09,495 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:57:09,497 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:57:10,386 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:57:13,460 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:57:14,434 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:57:14,665 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 02:58:36,410 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 02:58:36,410 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 02:58:36,418 - DEBUG - _pywebviewready event fired
+2026-03-26 02:58:36,475 - DEBUG - loaded event fired
+2026-03-26 02:58:38,475 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 02:58:38,476 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 02:58:38,480 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:58:39,352 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 02:58:45,365 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 02:58:46,199 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:58:46,202 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 176, in genericGetDetails
+    details = self.currentProvider.get_details(manga.get("link"))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\extensions\animeplanet.py", line 77, in get_details
+    parts = chaptersLinks[0].split("/")[2]
+            ~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+2026-03-26 02:58:49,836 - DEBUG - Resetting dropped connection: api.mangadex.org
+2026-03-26 02:58:50,635 - DEBUG - https://api.mangadex.org:443 "GET /manga/b5361588-0194-462a-9dda-778ba3e32a04/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 02:58:50,636 - ERROR - Traceback (most recent call last):
+  File "C:\Python311\Lib\site-packages\webview\util.py", line 254, in _call
+    result = func(*func_params)
+             ^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\main.py", line 176, in genericGetDetails
+    details = self.currentProvider.get_details(manga.get("link"))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\projetos\mango2\src\extensions\animeplanet.py", line 77, in get_details
+    parts = chaptersLinks[0].split("/")[2]
+            ~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+2026-03-26 03:03:20,753 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 03:03:20,754 - INFO - [loader] arquivo existe: True
+2026-03-26 03:03:20,760 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 03:03:20,783 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 03:03:20,783 - INFO - [loader] arquivo existe: True
+2026-03-26 03:03:20,784 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 03:03:20,805 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 03:03:20,805 - INFO - [loader] arquivo existe: True
+2026-03-26 03:03:20,816 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 03:03:20,838 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 03:03:20,838 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 03:03:20,838 - INFO - index existe: True
+2026-03-26 03:03:21,419 - DEBUG - Using WinForms / Chromium
+2026-03-26 03:03:23,065 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:03:23,067 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:03:23,098 - DEBUG - _pywebviewready event fired
+2026-03-26 03:03:23,153 - DEBUG - loaded event fired
+2026-03-26 03:03:25,333 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:03:25,333 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:03:25,339 - DEBUG - Starting new HTTPS connection (1): www.anime-planet.com:443
+2026-03-26 03:03:25,740 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:03:27,958 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:03:28,463 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:03:28,507 - DEBUG - Starting new HTTPS connection (1): graphql.anilist.co:443
+2026-03-26 03:03:28,798 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:03:38,844 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism/chapters HTTP/1.1" 200 None
+2026-03-26 03:03:39,247 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism HTTP/1.1" 200 None
+2026-03-26 03:03:39,538 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:05:02,570 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:05:02,571 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:05:02,580 - DEBUG - _pywebviewready event fired
+2026-03-26 03:05:02,647 - DEBUG - loaded event fired
+2026-03-26 03:05:04,231 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:05:04,231 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:05:04,235 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:05:05,663 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:05:08,822 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:05:09,645 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:05:09,872 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:06:11,717 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:06:11,718 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:06:11,726 - DEBUG - _pywebviewready event fired
+2026-03-26 03:06:11,776 - DEBUG - loaded event fired
+2026-03-26 03:06:13,195 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:06:13,195 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:06:13,498 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:06:15,017 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:06:15,501 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:06:15,742 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:09:47,882 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:09:47,883 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:09:47,891 - DEBUG - _pywebviewready event fired
+2026-03-26 03:09:47,944 - DEBUG - loaded event fired
+2026-03-26 03:09:49,379 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:09:49,379 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:09:49,382 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:09:50,284 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:09:51,295 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:09:52,131 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:09:52,415 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:10:42,499 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:10:42,500 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:10:42,508 - DEBUG - _pywebviewready event fired
+2026-03-26 03:10:42,567 - DEBUG - loaded event fired
+2026-03-26 03:10:44,143 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:10:44,143 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:10:44,461 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:10:45,696 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism/chapters HTTP/1.1" 200 None
+2026-03-26 03:10:46,148 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism HTTP/1.1" 200 None
+2026-03-26 03:10:46,409 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:11:12,920 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:11:12,921 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:11:12,927 - DEBUG - _pywebviewready event fired
+2026-03-26 03:11:12,977 - DEBUG - loaded event fired
+2026-03-26 03:11:15,150 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:11:15,150 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:11:15,448 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:11:16,692 - DEBUG - https://www.anime-planet.com:443 "GET /manga/local-farmer-kills-dragon-outs-himself-as-the-strongest-in-the-land/chapters HTTP/1.1" 200 None
+2026-03-26 03:11:17,160 - DEBUG - https://www.anime-planet.com:443 "GET /manga/local-farmer-kills-dragon-outs-himself-as-the-strongest-in-the-land HTTP/1.1" 200 None
+2026-03-26 03:11:17,675 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:11:55,971 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:11:55,972 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:11:55,978 - DEBUG - _pywebviewready event fired
+2026-03-26 03:11:56,023 - DEBUG - loaded event fired
+2026-03-26 03:11:57,583 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:11:57,583 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:11:57,887 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:12:00,360 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism/chapters HTTP/1.1" 200 None
+2026-03-26 03:12:00,813 - DEBUG - https://www.anime-planet.com:443 "GET /manga/aphorism HTTP/1.1" 200 None
+2026-03-26 03:12:01,099 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:13:11,189 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:13:11,190 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:13:11,197 - DEBUG - _pywebviewready event fired
+2026-03-26 03:13:11,242 - DEBUG - loaded event fired
+2026-03-26 03:13:12,896 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:13:12,896 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:13:12,900 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:13:13,785 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:13:14,607 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:13:15,422 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:13:15,647 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:13:51,365 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:13:51,366 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:13:51,373 - DEBUG - _pywebviewready event fired
+2026-03-26 03:13:51,418 - DEBUG - loaded event fired
+2026-03-26 03:13:52,717 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:13:52,717 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:13:53,039 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:13:54,229 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:13:54,691 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:13:55,073 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:14:49,929 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:14:49,929 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:14:49,935 - DEBUG - _pywebviewready event fired
+2026-03-26 03:14:49,987 - DEBUG - loaded event fired
+2026-03-26 03:14:50,929 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:14:50,930 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:14:51,375 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:14:53,143 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:14:53,610 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:14:53,888 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:15:49,667 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:15:49,667 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:15:49,674 - DEBUG - _pywebviewready event fired
+2026-03-26 03:15:49,719 - DEBUG - loaded event fired
+2026-03-26 03:15:51,802 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:15:51,803 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:15:52,311 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:15:53,398 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:15:54,145 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:15:54,408 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:17:22,550 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:17:22,552 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:17:22,561 - DEBUG - _pywebviewready event fired
+2026-03-26 03:17:22,605 - DEBUG - loaded event fired
+2026-03-26 03:17:39,733 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:17:39,734 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:17:39,741 - DEBUG - _pywebviewready event fired
+2026-03-26 03:17:39,790 - DEBUG - loaded event fired
+2026-03-26 03:20:48,723 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:20:48,723 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:20:48,727 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:20:51,050 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:20:52,130 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:20:52,974 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:20:53,275 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:26:47,666 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 03:26:47,666 - INFO - [loader] arquivo existe: True
+2026-03-26 03:26:47,667 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 03:26:47,692 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 03:26:47,693 - INFO - [loader] arquivo existe: True
+2026-03-26 03:26:47,694 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 03:26:47,717 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 03:26:47,718 - INFO - [loader] arquivo existe: True
+2026-03-26 03:26:47,725 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 03:26:47,759 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 03:26:47,759 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 03:26:47,759 - INFO - index existe: True
+2026-03-26 03:26:48,233 - DEBUG - Using WinForms / Chromium
+2026-03-26 03:26:49,733 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:26:49,734 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:26:49,767 - DEBUG - _pywebviewready event fired
+2026-03-26 03:26:49,825 - DEBUG - loaded event fired
+2026-03-26 03:26:53,039 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:26:53,039 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:26:53,047 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:26:54,455 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:26:57,554 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:26:58,377 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:26:58,385 - DEBUG - Starting new HTTPS connection (1): graphql.anilist.co:443
+2026-03-26 03:26:58,705 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:27:52,670 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:27:52,671 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:27:52,677 - DEBUG - _pywebviewready event fired
+2026-03-26 03:27:52,724 - DEBUG - loaded event fired
+2026-03-26 03:27:55,190 - INFO - changeProvider chamado com: 'WeebCentral'
+2026-03-26 03:27:55,190 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:27:55,194 - DEBUG - Starting new HTTPS connection (1): weebcentral.com:443
+2026-03-26 03:27:55,640 - DEBUG - https://weebcentral.com:443 "GET / HTTP/1.1" 200 None
+2026-03-26 03:27:59,723 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:27:59,723 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:27:59,727 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:28:00,636 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:28:02,049 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:28:02,872 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:28:03,105 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:29:04,284 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:29:04,285 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:29:04,292 - DEBUG - _pywebviewready event fired
+2026-03-26 03:29:04,342 - DEBUG - loaded event fired
+2026-03-26 03:29:05,884 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:29:05,884 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:29:05,887 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:29:06,743 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:29:07,833 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:29:08,642 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:29:08,886 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:35:14,228 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 03:35:14,229 - INFO - [loader] arquivo existe: True
+2026-03-26 03:35:14,230 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 03:35:14,253 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 03:35:14,253 - INFO - [loader] arquivo existe: True
+2026-03-26 03:35:14,255 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 03:35:14,281 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 03:35:14,281 - INFO - [loader] arquivo existe: True
+2026-03-26 03:35:14,283 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 03:35:14,317 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 03:35:14,318 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 03:35:14,318 - INFO - index existe: True
+2026-03-26 03:35:14,864 - DEBUG - Using WinForms / Chromium
+2026-03-26 03:35:16,231 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:35:16,232 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:35:16,263 - DEBUG - _pywebviewready event fired
+2026-03-26 03:35:16,335 - DEBUG - loaded event fired
+2026-03-26 03:35:23,028 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:35:23,028 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:35:23,034 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:35:25,011 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:35:27,168 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:35:28,031 - DEBUG - https://api.mangadex.org:443 "GET /manga/4e421eb8-d4a0-4096-86db-ca5e3fc42c5d/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:35:28,039 - DEBUG - Starting new HTTPS connection (1): graphql.anilist.co:443
+2026-03-26 03:35:28,388 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:41:13,763 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:41:13,764 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:41:13,771 - DEBUG - _pywebviewready event fired
+2026-03-26 03:41:13,820 - DEBUG - loaded event fired
+2026-03-26 03:41:18,915 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:41:18,915 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:41:18,918 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:41:20,336 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:41:24,595 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:41:25,446 - DEBUG - https://api.mangadex.org:443 "GET /manga/d7037b2a-874a-4360-8a7b-07f2899152fd/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:41:25,700 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:43:57,844 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:43:57,845 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:43:57,853 - DEBUG - _pywebviewready event fired
+2026-03-26 03:43:57,899 - DEBUG - loaded event fired
+2026-03-26 03:43:59,196 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:43:59,196 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:43:59,199 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:44:00,082 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:44:07,919 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:44:08,731 - DEBUG - https://api.mangadex.org:443 "GET /manga/b5361588-0194-462a-9dda-778ba3e32a04/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 605
+2026-03-26 03:44:09,224 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:44:20,260 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:44:21,067 - DEBUG - https://api.mangadex.org:443 "GET /manga/cfc35298-08f5-413a-976a-b0e0461e0ffa/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 675
+2026-03-26 03:44:21,516 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:44:52,960 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:44:53,752 - DEBUG - https://api.mangadex.org:443 "GET /manga/e318dfb8-d039-41b1-9d82-18fef4714586/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 609
+2026-03-26 03:44:53,994 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:45:08,099 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:45:09,019 - DEBUG - https://api.mangadex.org:443 "GET /manga?title=ore+no&limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:45:18,846 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:45:19,642 - DEBUG - https://api.mangadex.org:443 "GET /manga/0d4f9dba-f55f-4ff7-9f49-52311939504e/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:45:20,279 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:45:22,232 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:45:23,033 - DEBUG - https://api.mangadex.org:443 "GET /manga/0975443e-d701-43a4-93da-839065bd3dbd/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:45:23,890 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:45:40,165 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:45:40,967 - DEBUG - https://api.mangadex.org:443 "GET /manga/5993c10b-c49e-4771-9a3a-8b8436b12d80/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 92
+2026-03-26 03:45:41,521 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:46:03,366 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:46:03,366 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:46:03,374 - DEBUG - _pywebviewready event fired
+2026-03-26 03:46:03,428 - DEBUG - loaded event fired
+2026-03-26 03:46:08,744 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:46:08,744 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:46:08,747 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:09,668 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:46:14,313 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:15,275 - DEBUG - https://api.mangadex.org:443 "GET /manga?title=ore+no&limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:46:18,558 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:19,127 - DEBUG - https://api.mangadex.org:443 "GET /manga/5993c10b-c49e-4771-9a3a-8b8436b12d80/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 92
+2026-03-26 03:46:19,361 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:46:28,331 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:29,146 - DEBUG - https://api.mangadex.org:443 "GET /manga/fe840e8f-1267-4611-869b-9ab290dc205b/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:46:29,657 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:46:45,865 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:46:45,866 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:46:45,873 - DEBUG - _pywebviewready event fired
+2026-03-26 03:46:45,926 - DEBUG - loaded event fired
+2026-03-26 03:46:48,823 - INFO - changeProvider chamado com: 'MangaDex'
+2026-03-26 03:46:48,823 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:46:48,826 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:49,697 - DEBUG - https://api.mangadex.org:443 "GET /manga?limit=10&includes%5B%5D=author&includes%5B%5D=artist&includes%5B%5D=cover_art HTTP/1.1" 200 None
+2026-03-26 03:46:52,312 - DEBUG - Starting new HTTPS connection (1): api.mangadex.org:443
+2026-03-26 03:46:53,118 - DEBUG - https://api.mangadex.org:443 "GET /manga/ead3f958-0d01-4c1f-b605-620eacb8ead0/feed?translatedLanguage%5B%5D=en HTTP/1.1" 200 None
+2026-03-26 03:46:53,355 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
+2026-03-26 03:47:23,390 - INFO - [loader] carregando animeplanet de D:\projetos\mango2\src\extensions\animeplanet.py
+2026-03-26 03:47:23,391 - INFO - [loader] arquivo existe: True
+2026-03-26 03:47:23,392 - INFO - [loader] animeplanet carregado, atributos: ['AnimePlanet', 'BaseProvider', 'BeautifulSoup', 'UserAgent', 'cloudscraper', 'random']
+2026-03-26 03:47:23,416 - INFO - [loader] carregando mangadex de D:\projetos\mango2\src\extensions\mangadex.py
+2026-03-26 03:47:23,416 - INFO - [loader] arquivo existe: True
+2026-03-26 03:47:23,418 - INFO - [loader] mangadex carregado, atributos: ['BaseProvider', 'MangaDex', 'cloudscraper', 'os', 'pprint', 'requests']
+2026-03-26 03:47:23,440 - INFO - [loader] carregando weebcentral de D:\projetos\mango2\src\extensions\weebcentral.py
+2026-03-26 03:47:23,440 - INFO - [loader] arquivo existe: True
+2026-03-26 03:47:23,441 - INFO - [loader] weebcentral carregado, atributos: ['BaseProvider', 'BeautifulSoup', 'WeebCentral', 'cloudscraper', 'pprint']
+2026-03-26 03:47:23,465 - INFO - RESOURCE_BASE: D:\projetos\mango2
+2026-03-26 03:47:23,465 - INFO - index_file: D:\projetos\mango2\assets\index.html
+2026-03-26 03:47:23,465 - INFO - index existe: True
+2026-03-26 03:47:23,960 - DEBUG - Using WinForms / Chromium
+2026-03-26 03:47:25,404 - DEBUG - before_load event fired. injecting pywebview object
+2026-03-26 03:47:25,406 - DEBUG - Loading JS files from C:\Python311\Lib\site-packages\webview\js
+2026-03-26 03:47:25,445 - DEBUG - _pywebviewready event fired
+2026-03-26 03:47:25,525 - DEBUG - loaded event fired
+2026-03-26 03:47:28,245 - INFO - changeProvider chamado com: 'AnimePlanet'
+2026-03-26 03:47:28,245 - INFO - providers disponíveis: ['AnimePlanet', 'MangaDex', 'WeebCentral']
+2026-03-26 03:47:28,251 - DEBUG - Starting new HTTPS connection (1): www.anime-planet.com:443
+2026-03-26 03:47:28,796 - DEBUG - https://www.anime-planet.com:443 "GET /manga/read-online/updated HTTP/1.1" 200 None
+2026-03-26 03:47:30,644 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas/chapters HTTP/1.1" 200 None
+2026-03-26 03:47:31,135 - DEBUG - https://www.anime-planet.com:443 "GET /manga/at-home-with-a-girl-in-her-cute-pajamas HTTP/1.1" 200 None
+2026-03-26 03:47:31,206 - DEBUG - Starting new HTTPS connection (1): graphql.anilist.co:443
+2026-03-26 03:47:31,497 - DEBUG - https://graphql.anilist.co:443 "POST / HTTP/1.1" 200 None
