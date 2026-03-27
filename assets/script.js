@@ -1,7 +1,7 @@
 window.buildMangaInfo = buildMangaInfo;
 window.showToast = showToast;
 window.initSources = initSources;
-document.addEventListener('DOMContentLoaded', initSources);
+window.addEventListener('pywebviewready', initSources);
 
 
 let toastHideTimeout = null;
@@ -19,9 +19,9 @@ async function initSources(){
         const raw = await window.pywebview.api.get_extensions_page_data();
         const { installed } = JSON.parse(raw);
         const names = Object.values(installed);
-        sourceDropdown.innerHTML = names.length
-            ? names.map(e => `<div class="dropdown-item" data-value="${e.name}">${e.name}</div>`).join('')
-            : '<div class="dropdown-item" style="opacity:.4">Nenhuma extensão instalada</div>';
+       sourceDropdown.innerHTML = names.length
+        ? names.map(e => `<div class="dropdown-item" data-value="${e.name}" data-id="${e.id}">${e.name}</div>`).join('')
+        : '<div class="dropdown-item" style="opacity:.4">no extensions installed</div>';
     } catch(e) {
         console.error("initSources:", e);
     }
@@ -92,6 +92,9 @@ function closeExtensionPage() {
     container.innerHTML = "";
 }
 
+const defaultInstallButton = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`
+const uninstallButton = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"  width="16" height="16"><g id="SVGRepo_bgCarrier" stroke-width="2"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
+
 function renderExtensionCards(extensions) {
     if (!extensions || !extensions.length)
         return '<p style="color:var(--color-text-secondary);padding:24px">Nenhuma extensão encontrada.</p>';
@@ -99,20 +102,56 @@ function renderExtensionCards(extensions) {
     return extensions.map((ext) => `
         <article class="extension-card">
             <div class="extension-card-main">
-                <span class="extension-dot" aria-hidden="true"></span>
+                <img 
+                    src="${ext.icon || ''}" 
+                    alt="${ext.name}" 
+                    class="extension-icon"
+                    onerror="this.style.display='none'"
+                >
                 <div class="extension-copy">
-                    <h3>${ext.name}</h3>
-                    <p>${ext.language ? ext.language.toUpperCase() : 'Extension'}</p>
+                    <div class="extension-name-row">
+                        <h3>${ext.name}</h3>
+                        ${ext.is_installed ? '<span class="extension-installed-badge badge">INSTALLED</span>' : ''}
+                        <span class="extension-author badge">${ext.language ? ext.language.toUpperCase()  : 'Extension'}</span>
+                    </div>
+                    
+                    ${ext.description ? `<p class="extension-desc">${ext.description}</p>` : ''}
                 </div>
             </div>
             <button type="button" class="extension-action"
-                data-ext='${JSON.stringify(ext)}'
+                data-ext='${JSON.stringify(ext).replace(/'/g, "&#39;")}'
                 data-installed="${ext.is_installed}">
-                ${ext.is_installed ? 'Uninstall' : 'Install'}
+                ${ext.is_installed ? uninstallButton : defaultInstallButton}
             </button>
         </article>
     `).join("");
 }
+
+function syncExtensionCardState(providerButton, installed) {
+    const extensionCard = providerButton.closest(".extension-card");
+    const extensionNameRow = extensionCard?.querySelector(".extension-name-row");
+    if (!extensionNameRow) return;
+
+    const existingBadge = extensionNameRow.querySelector(".extension-installed-badge");
+
+    if (installed) {
+        if (!existingBadge) {
+            const badge = document.createElement("span");
+            badge.className = "extension-installed-badge badge";
+            badge.textContent = "INSTALED";
+            extensionNameRow.appendChild(badge);
+        }
+    } else if (existingBadge) {
+        existingBadge.remove();
+    }
+
+    providerButton.dataset.installed = String(installed);
+    providerButton.innerHTML = installed ? uninstallButton : defaultInstallButton;
+}
+
+
+
+const spinner = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='%23fff' stroke='%23fff' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
 
 
 document.addEventListener("click", async function(event) {
@@ -143,29 +182,28 @@ document.addEventListener("click", async function(event) {
     const ext = JSON.parse(providerButton.dataset.ext);
     const isInstalled = providerButton.dataset.installed === "true";
     providerButton.disabled = true;
-    providerButton.textContent = isInstalled ? "Removendo..." : "Instalando...";
+    providerButton.innerHTML = `<img src="${spinner}" alt="downloading"  style="width:14px;height:14px;display:block;">`;
+
+
 
     try {
         let raw;
         if (isInstalled) {
             raw = await window.pywebview.api.uninstall_extension(ext.id);
-            initSources();
         } else {
             raw = await window.pywebview.api.install_extension(JSON.stringify(ext));
-            initSources();
         }
         const res = JSON.parse(raw);
         showToast(res.message);
         if (res.ok) {
-            
-            providerButton.dataset.installed = String(!isInstalled);
-            providerButton.textContent = isInstalled ? "Install" : "Uninstall";
+            syncExtensionCardState(providerButton, !isInstalled);
+            initSources();
         } else {
-            providerButton.textContent = isInstalled ? "Uninstall" : "Install";
+            providerButton.innerHTML = isInstalled ? uninstallButton : defaultInstallButton;
         }
     } catch(e) {
         showToast("Erro inesperado.");
-        providerButton.textContent = isInstalled ? "Uninstall" : "Install";
+        providerButton.textContent = isInstalled ? uninstallButton : defaultInstallButton;
     } finally {
         providerButton.disabled = false;
     }
@@ -246,7 +284,7 @@ function changeShowText(text){
 }
 
 
-function setActiveProvider(source) {
+async function setActiveProvider(source) {
     if (!source) return;
 
     currentProviderName = source;
@@ -257,7 +295,7 @@ function setActiveProvider(source) {
     document.getElementById("library-container").innerHTML = "";
     clearDetailView();
 
-    window.pywebview.api.changeProvider(source);
+    await window.pywebview.api.changeProvider(source);
     window.pywebview.api.genericFetch();
 }
 
@@ -347,6 +385,34 @@ document.addEventListener('click', async function (event) {
         console.error('erro ao selecionar pasta:', error);
         showToast('erro ao selecionar pasta:', error)
     }
+});
+
+
+const svgAsc = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:all;cursor:pointer"><path d="M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10"></path></svg>`;
+
+const svgDesc = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:all;cursor:pointer"><path d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14"></path></svg>`;
+
+document.addEventListener('click', async function (event) {
+    const alignButton = event.target.closest('.align-button');
+    if (!alignButton) return;
+
+    const container = document.querySelector(".chapters-grid");
+    if (!container) return;
+
+    const items = Array.from(container.querySelectorAll(".chapter-item"));
+    if (!items.length) return;
+
+    const isAsc = alignButton.dataset.order !== 'asc';
+    alignButton.dataset.order = isAsc ? 'asc' : 'desc';
+    alignButton.innerHTML = isAsc ? svgAsc : svgDesc;
+
+    items.sort((a, b) => {
+        const numA = parseFloat(a.querySelector(".chapter-name")?.textContent.replace(/[^0-9.]/g, '') ?? 0);
+        const numB = parseFloat(b.querySelector(".chapter-name")?.textContent.replace(/[^0-9.]/g, '') ?? 0);
+        return isAsc ? numA - numB : numB - numA;
+    });
+
+    items.forEach(item => container.appendChild(item));
 });
 
 
@@ -462,7 +528,7 @@ window.mangaDownloadPage = async function( ch, chaptersLinks , title,  chapterIn
         showToast("failed to download chapter:", error)
     } finally {
         setChapterDownloadIcon(chapterIndex, false);
-        showToast(`${manga.title} chapter ${ch} is avaliable now`)
+        showToast(`${manga.title} ${ch} is avaliable now`)
     }
 
     return "";
@@ -590,15 +656,14 @@ async function renderMangaDetails(manga) {
             <div class="chapters-section">
                 <div class="section-header">
                     <div style="display: flex; align-items: center; gap: 1rem;">
-                        <h3 style="font-size: 1.5rem; font-weight: 600;">Chapters</h3>
+                        <h3 class="chapters-title-page">Chapters</h3>
                         <div style="display: flex; gap: 0.5rem; color: rgba(255,255,255,0.2);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            <div class="align-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: all; cursor: pointer; ><g id="SVGRepo_bgCarrier"  ></g><g id="SVGRepo_tracerCarrier" ></g><g id="SVGRepo_iconCarrier"> <path d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14" ></path> </g></svg>
+                            </div>
                             <div class="folder-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder" style="pointer-events: all; cursor: pointer;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                             </div>
-                        
-                        
                         </div>
                     </div>
                     <div class="dropdown download-dropdown download-options">
@@ -622,7 +687,6 @@ async function renderMangaDetails(manga) {
                             <div class="chapter-left">
                                 <div class="chapter-icons">
                                     <span class="chapter-download-icon">${chapterDefaultIconSvg}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </div>
                                 <span class="chapter-name">${ch}</span>
                             </div>

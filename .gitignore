@@ -13,3 +13,6 @@ src/__pycache__
 .gitignore
 extensions/
 .installed.json
+build_nuitka_fix
+build_nuitka
+nuitka-crash-report.xml

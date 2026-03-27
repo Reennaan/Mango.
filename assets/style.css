@@ -253,6 +253,12 @@ body {
   display: none; 
 }
 
+.chapters-title-page{
+  font-family: 'Dongle';
+  font-size: 2rem;
+  font-weight: bold;
+  
+}
 
 
 .preview-img {
@@ -524,7 +530,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   color: rgba(255, 255, 255, 0.2);
 }
 
-.chapter-item:hover .chapter-icons {
+.chapter-item:hover {
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -533,17 +539,17 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   color: rgba(255, 255, 255, 0.8);
 }
 
-.chapter-item:hover .chapter-name {
+.chapter-item:hover{
   color: #fff;
 }
-.folder-button:hover{
+.folder-button:hover , .align-button:hover{
   opacity: 1;
   transform: scale(1.05);
   color: #cacaca;
 }
+
 .search-icon:hover{
   opacity: 1;
- 
   color: #cacaca; 
 }
 
@@ -685,59 +691,95 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 
 .extension-grid {
   display: grid;
-  grid-auto-columns: 400px;
-  
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .extension-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
-  min-height: 68px;
-  padding: 1rem 1.35rem;
-  margin: .6375rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: #1b1b1b;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface);
+  transition: border-color .15s;
 }
 
-.extension-card:hover {
-  border-color: rgba(255, 255, 255, 0.11);
-  background: #202020;
-}
+.extension-card:hover { border-color: #444; }
 
 .extension-card.is-current {
   border-color: #E0E0E0;
 }
 
 .extension-card-main {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-width: 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
 }
 
-.extension-dot {
-  width: 9px;
-  height: 9px;
-  flex-shrink: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.extension-dot.is-active {
-  background: rgba(226, 226, 226, 0.616);
-  box-shadow: 0 0 14px #E0E0E0;
-}
-
-.extension-copy {
-  min-width: 0;
+.extension-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--border);
 }
 
 
+
+.extension-copy { flex: 1; min-width: 0; }
+
+
+.extension-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.extension-name-row h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+.extension-installed-badge {
+    order: 0; 
+}
+
+.badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 99px;
+    background: #2a1f6e;
+    color: #a89df5;
+    letter-spacing: .04em;
+    white-space: nowrap;
+}
+
+
+
+.extension-author {
+  background: #e7e7e7;
+  color: var(--input-bg);
+  order: 1;
+}
+
+.extension-desc {
+  font-size: 0.95rem;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-transform: lowercase;
+}
 
 
 
@@ -755,16 +797,16 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   line-height: 1.2;
-  text-transform: uppercase;
+ 
 }
 
 .extension-action {
   flex-shrink: 0;
   padding: 0;
+  margin-left: 90%;
   border: none;
   background: transparent;
   color: white;
-  
   font-weight: 10rem;
   letter-spacing: 0.14em;
   cursor: pointer;
@@ -782,13 +824,23 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   cursor: default;
 }
 
+
+.popular-recents{
+  font-family: 'Dongle';
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: -1rem;
+
+}
+
+
 @media (max-width: 1100px) {
   .extension-page {
     padding: 3.25rem 2rem;
   }
 
   .extension-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 2rem;
   }
 }
@@ -804,5 +856,9 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 
   .extension-card {
     padding-inline: 1.1rem;
+  }
+
+  .extension-grid {
+    grid-template-columns: 1fr;
   }
 }
