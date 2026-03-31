@@ -97,7 +97,7 @@ const uninstallButton = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.
 
 function renderExtensionCards(extensions) {
     if (!extensions || !extensions.length)
-        return '<p style="color:var(--color-text-secondary);padding:24px">Nenhuma extensão encontrada.</p>';
+        return '<p style="color:var(--color-text-secondary);padding:24px">No extensions found</p>';
 
     return extensions.map((ext) => `
         <article class="extension-card">
@@ -112,7 +112,8 @@ function renderExtensionCards(extensions) {
                     <div class="extension-name-row">
                         <h3>${ext.name}</h3>
                         ${ext.is_installed ? '<span class="extension-installed-badge badge">INSTALLED</span>' : ''}
-                        <span class="extension-author badge">${ext.language ? ext.language.toUpperCase()  : 'Extension'}</span>
+                        <span class="language badge">${ext.language ? ext.language.toUpperCase()  : 'Extension'}</span>
+                        ${ext.nsfw ? '<span class="extension-author badge nsfw">+18</span>' : ''}
                     </div>
                     
                     ${ext.description ? `<p class="extension-desc">${ext.description}</p>` : ''}
@@ -428,11 +429,20 @@ document.addEventListener('click', async function(event){
 })
 
 
-
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", async function(event) {
     if (event.key === "Escape") {
         closeExtensionPage();
     }
+    
+    if(event.key !== "Enter") return;
+        
+    const inputValue = document.querySelector(".search-input").value
+    console.log(inputValue)
+    if(inputValue != ""){
+        const searchedMango = await window.pywebview.api.search_mango(inputValue);
+    }
+
+
 });
 
 

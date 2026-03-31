@@ -736,40 +736,48 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 
 .extension-name-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
+    gap: 5px;
+    margin-bottom: 10px;
 }
 
 .extension-name-row h3 {
-    font-size: 14px;
+    font-size: 14px;  
     font-weight: 600;
     margin: 0;
 }
 
 
 .extension-installed-badge {
-    order: 0; 
+    order: 0;
+    background: #2a1f6e;
+    color: #a89df5; 
 }
 
 .badge {
     font-size: 10px;
     font-weight: 600;
     padding: 2px 7px;
-    border-radius: 99px;
-    background: #2a1f6e;
-    color: #a89df5;
+    border-radius: 99px;  
     letter-spacing: .04em;
     white-space: nowrap;
 }
 
 
 
-.extension-author {
+.language {
   background: #e7e7e7;
   color: var(--input-bg);
   order: 1;
 }
+
+.nsfw{
+  background: #FF6740;
+  color: var(--input-bg);
+  order: 2;
+}
+
 
 .extension-desc {
   font-size: 0.95rem;
