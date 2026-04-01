@@ -158,9 +158,13 @@ body {
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 0.25rem 0.55rem;
   color: var(--text-primary);
-  font-size: 0.875rem;
+  position: relative;
+  font-family: 'Dongle';
+  font-size: 1.5rem;
+  line-height: 0.8;
+
   outline: none;
   transition: border-color 0.2s;
 }
@@ -542,7 +546,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 .chapter-item:hover{
   color: #fff;
 }
-.folder-button:hover , .align-button:hover{
+.folder-button:hover , .align-button:hover , .bookmark:hover{
   opacity: 1;
   transform: scale(1.05);
   color: #cacaca;
@@ -553,23 +557,29 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   color: #cacaca; 
 }
 
+
 .dropdown{
     width:220px;
-    font-family: var(--font-sans);
+    
     color:white;
     position:relative;
+    font-family: 'Dongle';
+    font-size: 1.5rem;
+    line-height: 0.8;
     
 }
 
 .dropdown-header{
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    padding:10px 14px;
+    min-height: 44px;
+    padding: 8px 14px;
     border-radius:8px;
     cursor:pointer;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    box-sizing: border-box;
 }
 
 .dropdown-list{
@@ -587,9 +597,14 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 }
 
 .dropdown-item{
-    padding:10px 14px;
+    min-height: 44px;
+    padding: 8px 14px;
     cursor:pointer;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
+
 
 .dropdown-item:hover{
     background:#2d2d2d;

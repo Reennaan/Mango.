@@ -5,11 +5,13 @@ window.addEventListener('pywebviewready', initSources);
 
 
 let toastHideTimeout = null;
+let currentProviderName = "";
 
 
 
 window.addEventListener('pywebviewready', () => {
     initSources();
+    loadRecents();
 });
 
 async function initSources(){
@@ -24,6 +26,25 @@ async function initSources(){
         : '<div class="dropdown-item" style="opacity:.4">no extensions installed</div>';
     } catch(e) {
         console.error("initSources:", e);
+    }
+}
+
+async function loadRecents() {
+    const container = document.getElementById('library-container');
+    if (!container) return;
+
+    try {
+        const recents = await window.pywebview.api.getRecents();
+        container.innerHTML = "";
+        changeShowText("Recents");
+
+        if (!Array.isArray(recents)) return;
+
+        recents.slice().reverse().forEach((manga) => {
+            buildMangaInfo(manga);
+        });
+    } catch (e) {
+        console.error("loadRecents:", e);
     }
 }
 
@@ -244,7 +265,7 @@ async function renderExtension() {
         container.querySelector(".extension-grid").innerHTML = renderExtensionCards(data.available);
     } catch(e) {
         container.querySelector(".extension-grid").innerHTML =
-            '<p style="color:var(--color-text-danger);padding:24px">Erro ao carregar extensões.</p>';
+            '<p style="color:var(--color-text-danger);padding:24px">Fail on load extensions</p>';
     }
 }
 
@@ -285,7 +306,7 @@ function changeShowText(text){
 }
 
 
-async function setActiveProvider(source) {
+async function setActiveProvider(source, fetchHome = true) {
     if (!source) return;
 
     currentProviderName = source;
@@ -297,7 +318,9 @@ async function setActiveProvider(source) {
     clearDetailView();
 
     await window.pywebview.api.changeProvider(source);
-    window.pywebview.api.genericFetch();
+    if (fetchHome) {
+        window.pywebview.api.genericFetch();
+    }
 }
 
 list.addEventListener("click", function(e){
@@ -466,7 +489,10 @@ async function buildMangaInfo(manga) {
             <h3 class="titleCard">${title}</h3>
         `;
 
-        card.onclick = () => {
+        card.onclick = async () => {
+            if (manga.currentSource) {
+                await setActiveProvider(manga.currentSource, false);
+            }
             
             document.querySelectorAll('.mangaCard').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
@@ -627,6 +653,8 @@ async function renderMangaDetails(manga) {
     const descClass = descText.length > 550 ? "manga-desc custom-scrollbar has-scroll" : "manga-desc";
     const titleText = typeof title === "string" && title.length > 45 ? `${title.slice(0, 45)}...` : title;
 
+    saveRecent(manga, currentProviderName)
+
 
     detailView.innerHTML = `
         ${extensionMarkup}
@@ -668,6 +696,10 @@ async function renderMangaDetails(manga) {
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <h3 class="chapters-title-page">Chapters</h3>
                         <div style="display: flex; gap: 0.5rem; color: rgba(255,255,255,0.2);">
+                            <div class="bookmark">
+                                <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="16"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g opacity="0.4"> <path d="M14.5 10.6504H9.5" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 8.20996V13.21" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> </g> <path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                            </div>
+
                             <div class="align-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: all; cursor: pointer; ><g id="SVGRepo_bgCarrier"  ></g><g id="SVGRepo_tracerCarrier" ></g><g id="SVGRepo_iconCarrier"> <path d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14" ></path> </g></svg>
                             </div>
@@ -708,5 +740,19 @@ async function renderMangaDetails(manga) {
     `;
 
     initDownloadOptionsDropdown(detailView);
+
+}
+
+
+function saveRecent(manga,currentSource){
+    // manga = title, cover, link
+    console.log(manga, currentSource)
+    
+    const recentList = {
+        ...manga,
+        "currentSource":currentSource
+    }
+  
+    window.pywebview.api.saveRecentCache(recentList)
 
 }
