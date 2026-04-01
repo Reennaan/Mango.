@@ -552,6 +552,11 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   color: #cacaca;
 }
 
+
+.fill{
+  color: #a74038;
+}
+
 .search-icon:hover{
   opacity: 1;
   color: #cacaca; 

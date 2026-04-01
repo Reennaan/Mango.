@@ -411,6 +411,27 @@ document.addEventListener('click', async function (event) {
     }
 });
 
+document.addEventListener('click', async function (event) {
+    const bookmarkButton = event.target.closest('.bookmark');
+    if (!bookmarkButton) return;
+
+    const titleEl = document.querySelector(".manga-title-large");
+    const title = titleEl ? titleEl.textContent : "";  // evita o erro
+
+    try {
+        bookmarkButton.classList.toggle("fill");
+        bookmarkButton.innerHTML = bookmarkButton.classList.contains("fill")
+            ? bookmarkFilledSvg
+            : bookmarkOutlineSvg;
+        
+        if (title) showToast(`${title} addeded to favorites`);
+    } catch (error) {
+        console.error('Fail to add as favorite:', error);
+        showToast('Fail to add as favorite:', error);
+    }
+});
+
+
 
 const svgAsc = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:all;cursor:pointer"><path d="M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10"></path></svg>`;
 
@@ -517,6 +538,8 @@ const chapterDefaultIconSvg = `
 `;
 
 const chapterLoadingIconDataUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='%23fff' stroke='%23fff' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
+const bookmarkOutlineSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
+const bookmarkFilledSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
 
 function setChapterDownloadIcon(chapterIndex, isLoading) {
     const iconContainer = document.querySelector(`.chapter-item[data-chapter-index="${chapterIndex}"] .chapter-download-icon`);
@@ -539,7 +562,6 @@ window.mangaDownloadPage = async function( ch, chaptersLinks , title,  chapterIn
 
     //let slug = parts.slice(2).join("/").split("/")[0];
     //let chapter = parts[4];
-    
    
 
     manga = {
@@ -696,8 +718,8 @@ async function renderMangaDetails(manga) {
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <h3 class="chapters-title-page">Chapters</h3>
                         <div style="display: flex; gap: 0.5rem; color: rgba(255,255,255,0.2);">
-                            <div class="bookmark">
-                                <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="16"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g opacity="0.4"> <path d="M14.5 10.6504H9.5" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 8.20996V13.21" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> </g> <path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                            <div class="bookmark" onclick="saveFavorite(${manga, currentProviderName})" >
+                                ${bookmarkOutlineSvg}
                             </div>
 
                             <div class="align-button">
@@ -725,7 +747,7 @@ async function renderMangaDetails(manga) {
 
                 <div class="chapters-grid custom-scrollbar">
                     ${chapters.map((ch, i) => `
-                        <div class="chapter-item" data-chapter-index="${i}" onclick='mangaDownloadPage(${JSON.stringify(ch)}, ${JSON.stringify(chaptersData.chaptersLinks[i])}, ${JSON.stringify(chaptersData.title)} , ${i})'>
+                        <div class="chapter-item" data-chapter-index="${i}" onclick='mangaDownloadPage(${JSON.stringify(ch)}, ${JSON.stringify(chaptersData.chaptersLinks[i])}, ${JSON.stringify(chaptersData.title).replace(/'/g, "&apos;")} , ${i})'>
                             <div class="chapter-left">
                                 <div class="chapter-icons">
                                     <span class="chapter-download-icon">${chapterDefaultIconSvg}</span>
@@ -755,4 +777,8 @@ function saveRecent(manga,currentSource){
   
     window.pywebview.api.saveRecentCache(recentList)
 
+}
+
+function saveFavorite(manga,currentSource){
+    
 }

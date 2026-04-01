@@ -18,3 +18,5 @@ build_nuitka
 nuitka-crash-report.xml
 app.log
 build_nuitka_final
+
+src/main.py
