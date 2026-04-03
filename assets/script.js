@@ -12,6 +12,7 @@ let currentProviderName = "";
 window.addEventListener('pywebviewready', () => {
     initSources();
     loadRecents();
+    loadFav();
 });
 
 async function initSources(){
@@ -39,7 +40,7 @@ async function loadRecents() {
         changeShowText("Recents");
 
         if (!Array.isArray(recents)) return;
-
+        
         recents.slice().reverse().forEach((manga) => {
             buildMangaInfo(manga);
         });
@@ -47,6 +48,25 @@ async function loadRecents() {
         console.error("loadRecents:", e);
     }
 }
+
+async function loadFav() {
+   
+    try{
+        const fav = await window.pywebview.api.getFav();
+        
+        fav.slice().reverse().forEach((manga) =>{
+            saveFavorite(manga);
+        });
+
+    }catch (e){
+        console.log("deu merda no fav")
+        console.error(`mensagem ${e.message}`)
+        console.error(`onde ocorreu ${e.stack}`)
+    
+}
+
+}
+
 
 
 
@@ -412,15 +432,15 @@ document.addEventListener('click', async function (event) {
 });
 
 document.addEventListener('click', async function (event) {
-    const bookmarkButton = event.target.closest('.bookmark');
-    if (!bookmarkButton) return;
+    const favButton = event.target.closest('.favButton');
+    if (!favButton) return;
 
     const titleEl = document.querySelector(".manga-title-large");
     const title = titleEl ? titleEl.textContent : "";  // evita o erro
 
     try {
-        bookmarkButton.classList.toggle("fill");
-        bookmarkButton.innerHTML = bookmarkButton.classList.contains("fill")
+        favButton.classList.toggle("fill");
+        favButton.innerHTML = favButton.classList.contains("fill")
             ? bookmarkFilledSvg
             : bookmarkOutlineSvg;
         
@@ -539,7 +559,7 @@ const chapterDefaultIconSvg = `
 
 const chapterLoadingIconDataUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='%23fff' stroke='%23fff' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
 const bookmarkOutlineSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
-const bookmarkFilledSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
+const bookmarkFilledSvg = `<svg xmlns="http://www.w3.org/2000/svg"class="fill" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
 
 function setChapterDownloadIcon(chapterIndex, isLoading) {
     const iconContainer = document.querySelector(`.chapter-item[data-chapter-index="${chapterIndex}"] .chapter-download-icon`);
@@ -602,12 +622,6 @@ async function renderMangaDetails(manga) {
     //console.log(manga.link)
 
     const extensionMarkup = getExtensionButtonMarkup();
-
-    
-   
-
-
-
 
 
    
@@ -718,8 +732,8 @@ async function renderMangaDetails(manga) {
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <h3 class="chapters-title-page">Chapters</h3>
                         <div style="display: flex; gap: 0.5rem; color: rgba(255,255,255,0.2);">
-                            <div class="bookmark" onclick="saveFavorite(${manga, currentProviderName})" >
-                                ${bookmarkOutlineSvg}
+                            <div class="favButton" data-manga='${JSON.stringify(manga).replace(/'/g, "&apos;")}' data-provider='${currentProviderName}' onclick="saveFavorite(this)">
+                                ${manga.favorite ? bookmarkFilledSvg : bookmarkOutlineSvg}
                             </div>
 
                             <div class="align-button">
@@ -727,6 +741,9 @@ async function renderMangaDetails(manga) {
                             </div>
                             <div class="folder-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder" style="pointer-events: all; cursor: pointer;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            </div>
+                            <div class="bookmark">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 13V7M9 10H15M19 21V7.8C19 6.11984 19 5.27976 18.673 4.63803C18.3854 4.07354 17.9265 3.6146 17.362 3.32698C16.7202 3 15.8802 3 14.2 3H9.8C8.11984 3 7.27976 3 6.63803 3.32698C6.07354 3.6146 5.6146 4.07354 5.32698 4.63803C5 5.27976 5 6.11984 5 7.8V21L12 17L19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             </div>
                         </div>
                     </div>
@@ -768,7 +785,7 @@ async function renderMangaDetails(manga) {
 
 function saveRecent(manga,currentSource){
     // manga = title, cover, link
-    console.log(manga, currentSource)
+    //console.log(manga, currentSource)
     
     const recentList = {
         ...manga,
@@ -779,6 +796,53 @@ function saveRecent(manga,currentSource){
 
 }
 
-function saveFavorite(manga,currentSource){
+function saveFavorite(data){
+    document.querySelector('.fav-container').style.display = 'block'
+    let manga
+    let provider
     
+
+
+
+    if (data && typeof data.getAttribute === 'function') {
+        const rawData = data.getAttribute('data-manga');
+        manga = JSON.parse(rawData);
+        provider = data.getAttribute('data-provider')
+    }else{
+        manga = data
+        provider = data.currentSource
+
+    } 
+
+
+    if(manga.length >= 30){
+        showToast("you have reached the favorites limit")
+        return
+    }
+   
+  
+    const img  = document.createElement("img")
+    img.classList = "folder-cover"
+  
+
+    img.src = manga.cover
+    const item = document.querySelector(".manga-item")
+    const fav = {
+        ...manga,
+        "currentSource": provider,
+        "favorite":true
+    }
+    img.addEventListener('click', async () => {
+        await window.pywebview.api.changeProvider(provider);
+        renderMangaDetails(fav);
+    })
+
+    if(!window.pywebview.api.saveFav(fav)) return
+
+    
+    if(item.childElementCount < 6){
+        item.appendChild(img)
+    }
+    
+
 }

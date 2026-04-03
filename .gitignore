@@ -18,3 +18,11 @@ build_nuitka
 nuitka-crash-report.xml
 app.log
 build_nuitka_final
+dist_pyarmor_fixed
+.venv
+.pyarmor
+mango_protected.spec
+mango_qt.spec
+Mango2.patched.spec
+Mango2.spec
+build_mango2_light.ps1

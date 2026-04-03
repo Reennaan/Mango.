@@ -546,7 +546,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 .chapter-item:hover{
   color: #fff;
 }
-.folder-button:hover , .align-button:hover , .bookmark:hover{
+.folder-button:hover , .align-button:hover , .bookmark:hover, .favButton:hover{
   opacity: 1;
   transform: scale(1.05);
   color: #cacaca;
@@ -853,13 +853,57 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 }
 
 
-.popular-recents{
+.popular-recents, .collection{
   font-family: 'Dongle';
   font-size: 2rem;
   font-weight: bold;
   margin-top: -1rem;
 
 }
+
+.collection{
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.fav-container{
+  display: flex;
+ 
+}
+
+.folder-cover{
+  border-radius: 10%;
+  max-width: 60px;
+  max-height:80px;
+  padding: 2px;
+}
+
+.grid-cover{
+  display: flex;
+  flex-direction: row;
+  
+  width: 100%;
+
+}
+
+.folder-name{
+  font-family: 'Dongle';
+  font-size: 1.5rem;
+  
+}
+
+.fav-folder{
+  position: flex;
+  background-color: #303037;
+  width: 12.2375rem;
+  height: 13.8rem;
+  border-radius: 5%;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+
 
 
 @media (max-width: 1100px) {
