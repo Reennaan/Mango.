@@ -26,4 +26,3 @@ mango_qt.spec
 Mango2.patched.spec
 Mango2.spec
 build_mango2_light.ps1
-src/main.py
