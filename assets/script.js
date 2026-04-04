@@ -30,6 +30,22 @@ async function initSources(){
     }
 }
 
+async function isinstaled(provider) {
+    if (!provider) return false;
+
+    try {
+        const raw = await window.pywebview.api.get_extensions_page_data();
+        const { installed } = JSON.parse(raw);
+
+        return Object.values(installed || {}).some((ext) =>
+            ext.name === provider || ext.id === provider
+        );
+    } catch (e) {
+        console.error("isinstaled:", e);
+        return false;
+    }
+}
+
 async function loadRecents() {
     const container = document.getElementById('library-container');
     if (!container) return;
@@ -37,11 +53,18 @@ async function loadRecents() {
     try {
         const recents = await window.pywebview.api.getRecents();
         container.innerHTML = "";
+        const info = `
+       
+          `
+        document.querySelector(".recent-info").style.display = "flex"
+        
+
+
         changeShowText("Recents");
 
         if (!Array.isArray(recents)) return;
         
-        recents.slice().reverse().forEach((manga) => {
+        recents.slice().reverse().forEach(async (manga) => {
             buildMangaInfo(manga);
         });
     } catch (e) {
@@ -332,14 +355,18 @@ async function setActiveProvider(source, fetchHome = true) {
     currentProviderName = source;
     header.textContent = source;
     list.style.display = "none";
-
+    document.querySelector(".recent-info").style.display = "none"
     changeShowText(`Popular on: ${source}`);
-    document.getElementById("library-container").innerHTML = "";
+    if(fetchHome){
+        document.getElementById("library-container").innerHTML = "";
+    }
+
+    //document.getElementById("library-container").innerHTML = "";
     clearDetailView();
 
     await window.pywebview.api.changeProvider(source);
     if (fetchHome) {
-        window.pywebview.api.genericFetch();
+        await window.pywebview.api.genericFetch();
     }
 }
 
@@ -521,24 +548,40 @@ async function buildMangaInfo(manga) {
         const cover = manga.cover
         const title = manga.title
         const link = manga.link
-        console.log(cover, title,link)
+        //console.log(cover, title,link)
+
+        let installed = true;
+
+        if(manga.currentSource){
+            installed = await isinstaled(manga.currentSource);
+            console.log(installed)
+        }
+
 
         const card = document.createElement('div');
         card.className = 'mangaCard';
         card.innerHTML = `
-            <img src="${cover}" class="cardImg" alt="${title}" referrerPolicy="no-referrer">
+            <img src="${cover}" class="cardImg ${installed? "" : "not-installed"}" alt="${title}" referrerPolicy="no-referrer">
             <h3 class="titleCard">${title}</h3>
         `;
 
         card.onclick = async () => {
-            if (manga.currentSource) {
-                await setActiveProvider(manga.currentSource, false);
+             if (card.querySelector(".cardImg")?.classList.contains("not-installed")) {
+                showToast(`${manga.currentSource} not found. Make sure that the source is installed`)
+                
+            }else{
+                renderMangaDetails(manga);
+                if (manga.currentSource) {
+                    await setActiveProvider(manga.currentSource, false);
+                }
             }
+
+
             
             document.querySelectorAll('.mangaCard').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
-        
-            renderMangaDetails(manga);
+           
+            
         };
 
         container.appendChild(card);
@@ -846,3 +889,79 @@ function saveFavorite(data){
     
 
 }
+const returnIcon = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.9998 8L6 14L12.9998 21" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 14H28.9938C35.8768 14 41.7221 19.6204 41.9904 26.5C42.2739 33.7696 36.2671 40 28.9938 40H11.9984" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
+const trashIcon = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
+
+async function openFolder(folder){
+    const detailView = document.getElementById('detail-view');
+    const folderName = folder.textContent;
+
+    const fav = await window.pywebview.api.getFav();
+    console.log(fav)
+
+    
+  
+
+
+    if (!detailView) return;
+    detailView.innerHTML = ""
+    const folderScreen = `
+        <div class="open-folder-container custom-scrollbar">
+            <div class="folder-options">  
+                <div class="return-button">${returnIcon}</div>
+                <div class="trash-button">${trashIcon}</div>
+            </div>
+            <h2 class="section-title" id="folder-page-name">${folderName}</h2>
+            
+            <div class=grid-folder-page>
+                <div class="mangaCardFolder">
+                    
+                </div>
+            </div>
+        </div>
+    `
+    detailView.innerHTML = `${folderScreen}`
+    const card = document.querySelector(".mangaCardFolder")
+    document.querySelector(".return-button").addEventListener("click", () =>{ clearDetailView()})
+    const deleteOption = document.createElement("div")
+    deleteOption.textContent = trashIcon
+    
+
+
+
+    fav.forEach(async (manga) =>{
+        let installed = true;
+        if(manga.currentSource){
+            installed = await isinstaled(manga.currentSource);
+            //console.log(installed)
+        }
+        
+        const img  = document.createElement("img")
+        img.classList = `card-folder-cover ${installed? "" : "not-installed"}`
+        img.src = manga.cover 
+
+        if(manga.currentSource){
+            installed = await isinstaled(manga.currentSource);
+            
+        }
+        img.addEventListener('click', async () => {
+            
+            
+            if(img.classList.contains("not-installed")){
+                showToast(`${manga.currentSource} not found. Make sure that the source is installed`)                
+            }else{
+                await window.pywebview.api.changeProvider(manga.currentSource);
+                renderMangaDetails(manga);
+            
+            }
+        
+            
+        })
+        card.appendChild(img)
+        
+    });
+
+    
+
+}
+

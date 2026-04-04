@@ -19,12 +19,7 @@ body{
 #input-container .source .inputManga .okBtn{
     margin: 10px;
 }
-.cardImg{
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    object-fit: cover;
-    border-radius: 8px;
-}
+
 .titleCard{
     color: white;
     font-size: 0.9rem;
@@ -63,7 +58,7 @@ body{
   --bg-color: #0D0D0D;
   --text-primary: #E0E0E0;
   --text-secondary: rgba(255, 255, 255, 0.4);
-  --accent-color: #FF6321;
+  --accent-color: #eb7745ad;
   --panel-bg: #151515;
   --input-bg: #1A1A1A;
   --border-color: rgba(255, 255, 255, 0.05);
@@ -219,6 +214,21 @@ body {
   margin-top: 2px;
 }
 
+.recent-info {
+  align-items: center;
+  margin-left: 1rem;
+  margin-right: auto;
+  margin-bottom: 1.2rem;
+}
+
+.recent-info p {
+  margin: 0;
+}
+
+.not-installed {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
 
 .data-container {
   display: flex;
@@ -235,7 +245,7 @@ body {
   opacity: 0.6;
 }
 
-.mangaCard:hover, .mangaCard.active {
+.mangaCard:hover, .card-folder-cover:hover {
   opacity: 1;
   transform: scale(1.05);
 }
@@ -546,10 +556,11 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 .chapter-item:hover{
   color: #fff;
 }
-.folder-button:hover , .align-button:hover , .bookmark:hover, .favButton:hover{
+.folder-button:hover , .align-button:hover , .bookmark:hover, .favButton:hover , .return-button:hover , .trash-button:hover {
   opacity: 1;
   transform: scale(1.05);
   color: #cacaca;
+  cursor: pointer;
 }
 
 
@@ -874,9 +885,13 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 
 .folder-cover{
   border-radius: 10%;
-  max-width: 60px;
-  max-height:80px;
+  width: 57px;
+  height:79px;
   padding: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.6;
 }
 
 .grid-cover{
@@ -890,6 +905,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
 .folder-name{
   font-family: 'Dongle';
   font-size: 1.5rem;
+  width: fit-content
   
 }
 
@@ -901,9 +917,113 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.93) 44%, rgba(0, 0, 0, 0.77) 5
   border-radius: 5%;
   font-size: 1rem;
   padding: 10px;
+  border: 2px solid transparent; 
+  transition: all 0.4s ease; 
+}
+
+.fav-folder:has(.folder-name:hover) {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    
+}
+
+.folder-name:hover{
+  opacity: 1;
+  transition: all 0.4s ease; 
+  color: var(--accent-color);
+  cursor: pointer;
+}
+
+.folder-cover:hover {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 
+
+.open-folder-container{
+  padding: 20px;
+  font-family: 'Dongle';
+  font-size: 1.5rem;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mangaCardFolder{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  
+}
+
+.mangaCardFolder.is-delete-mode .folder-card-delete{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.folder-card-item{
+  position: relative;
+}
+
+.folder-card-delete{
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(16, 16, 16, 0.92);
+  color: rgba(255, 255, 255, 0.78);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.folder-card-delete:hover{
+  color: #fff;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+
+.card-folder-cover{
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.6;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  
+}
+#folder-page-name{
+  margin-left: 40%;
+  margin-top: -68px;
+  padding-bottom: 20px;
+}
+
+.folder-options{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.return-button{
+  padding: 10px;
+}
+
+.trash-button.is-active{
+  color: #cacaca;
+  opacity: 1;
+}
 
 
 @media (max-width: 1100px) {
