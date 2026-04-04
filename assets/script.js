@@ -1,3 +1,4 @@
+
 window.buildMangaInfo = buildMangaInfo;
 window.showToast = showToast;
 window.initSources = initSources;
@@ -76,10 +77,7 @@ async function loadFav() {
    
     try{
         const fav = await window.pywebview.api.getFav();
-        
-        fav.slice().reverse().forEach((manga) =>{
-            saveFavorite(manga);
-        });
+        renderFavoritePreview(fav);
 
     }catch (e){
         console.log("deu merda no fav")
@@ -88,6 +86,37 @@ async function loadFav() {
     
 }
 
+}
+
+function createFavoritePreviewImage(manga) {
+    const img = document.createElement("img");
+    img.classList = "folder-cover";
+    img.dataset.link = manga.link || "";
+    img.src = manga.cover;
+    img.addEventListener("click", async () => {
+        await window.pywebview.api.changeProvider(manga.currentSource);
+        renderMangaDetails(manga);
+    });
+    return img;
+}
+
+function renderFavoritePreview(favorites) {
+    const favContainer = document.querySelector(".fav-container");
+    const preview = document.querySelector(".manga-item");
+    if (!favContainer || !preview) return;
+
+    const items = Array.isArray(favorites) ? favorites : [];
+    preview.innerHTML = "";
+
+    if (!items.length) {
+        favContainer.style.display = "none";
+        return;
+    }
+
+    favContainer.style.display = "block";
+    items.slice(0, 6).forEach((manga) => {
+        preview.appendChild(createFavoritePreviewImage(manga));
+    });
 }
 
 
@@ -818,6 +847,7 @@ async function renderMangaDetails(manga) {
                     `).join('')}
                 </div>
             </div>
+            
         </div>
     `;
 
@@ -839,8 +869,7 @@ function saveRecent(manga,currentSource){
 
 }
 
-function saveFavorite(data){
-    document.querySelector('.fav-container').style.display = 'block'
+async function saveFavorite(data){
     let manga
     let provider
     
@@ -858,35 +887,34 @@ function saveFavorite(data){
     } 
 
 
-    if(manga.length >= 30){
-        showToast("you have reached the favorites limit")
-        return
-    }
-   
-  
-    const img  = document.createElement("img")
-    img.classList = "folder-cover"
-  
+    try {
+        const currentFav = await window.pywebview.api.getFav();
+        if (Array.isArray(currentFav) && currentFav.some((item) => item.link === manga.link)) {
+            showToast(`${manga.title} is already in favorites`);
+            renderFavoritePreview(currentFav);
+            return false;
+        }
 
-    img.src = manga.cover
-    const item = document.querySelector(".manga-item")
-    const fav = {
-        ...manga,
-        "currentSource": provider,
-        "favorite":true
-    }
-    img.addEventListener('click', async () => {
-        await window.pywebview.api.changeProvider(provider);
-        renderMangaDetails(fav);
-    })
+        if (Array.isArray(currentFav) && currentFav.length >= 30) {
+            showToast("you have reached the favorites limit");
+            return false;
+        }
 
-    if(!window.pywebview.api.saveFav(fav)) return
+        const fav = {
+            ...manga,
+            "currentSource": provider,
+            "favorite":true
+        };
 
-    
-    if(item.childElementCount < 6){
-        item.appendChild(img)
+        await window.pywebview.api.saveFav(fav);
+        const updatedFav = await window.pywebview.api.getFav();
+        renderFavoritePreview(updatedFav);
+        return true;
+    } catch (error) {
+        console.error("fail to save favorite:", error);
+        showToast("failed to save favorite");
+        return false;
     }
-    
 
 }
 const returnIcon = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.9998 8L6 14L12.9998 21" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 14H28.9938C35.8768 14 41.7221 19.6204 41.9904 26.5C42.2739 33.7696 36.2671 40 28.9938 40H11.9984" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
@@ -922,12 +950,23 @@ async function openFolder(folder){
     `
     detailView.innerHTML = `${folderScreen}`
     const card = document.querySelector(".mangaCardFolder")
+    const trashButton = document.querySelector(".trash-button")
+    const renderEmptyFolderState = () => {
+        if (card.childElementCount > 0) return;
+        card.classList.remove("is-delete-mode");
+        trashButton.classList.remove("is-active");
+        card.innerHTML = `<p class="folder-empty">No favorites saved yet.</p>`;
+    };
     document.querySelector(".return-button").addEventListener("click", () =>{ clearDetailView()})
-    const deleteOption = document.createElement("div")
-    deleteOption.textContent = trashIcon
+    trashButton.addEventListener("click", () => {
+        card.classList.toggle("is-delete-mode")
+        trashButton.classList.toggle("is-active")
+    })
     
-
-
+    if (!fav.length) {
+        renderEmptyFolderState()
+        return
+    }
 
     fav.forEach(async (manga) =>{
         let installed = true;
@@ -936,9 +975,38 @@ async function openFolder(folder){
             //console.log(installed)
         }
         
+        const folderCard = document.createElement("div")
+        folderCard.className = "folder-card-item"
+
         const img  = document.createElement("img")
         img.classList = `card-folder-cover ${installed? "" : "not-installed"}`
         img.src = manga.cover 
+
+        const deleteOption = document.createElement("button")
+        deleteOption.type = "button"
+        deleteOption.className = "folder-card-delete"
+        deleteOption.innerHTML = trashIcon
+        deleteOption.addEventListener("click", async (event) => {
+            event.stopPropagation()
+            deleteOption.disabled = true
+            try {
+                const raw = await window.pywebview.api.removeFav(manga.link)
+                const result = JSON.parse(raw)
+                showToast(result.message)
+                if (!result.ok) return
+
+                folderCard.remove()
+                const updatedFav = await window.pywebview.api.getFav()
+                renderFavoritePreview(updatedFav)
+                renderEmptyFolderState()
+            } catch (error) {
+                console.error("fail to delete favorite:", error)
+                showToast("failed to remove favorite")
+            } finally {
+                deleteOption.disabled = false
+            }
+
+        })
 
         if(manga.currentSource){
             installed = await isinstaled(manga.currentSource);
@@ -957,11 +1025,11 @@ async function openFolder(folder){
         
             
         })
-        card.appendChild(img)
+        folderCard.appendChild(img)
+        folderCard.appendChild(deleteOption)
+        card.appendChild(folderCard)
         
     });
 
     
-
 }
-
