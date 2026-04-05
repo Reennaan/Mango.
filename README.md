@@ -43,10 +43,9 @@ Instead, it works like:
 Mango is powered by extensions.
 
 - Add/remove sources anytime
-- Community-driven
 - Fully modular
 
-> No extensions = no content Mango is a **tool**, not a content provider dont sue me
+> No extensions = no content Mango is a **tool**, not a content provider dont sue me, i dont have money to pay
 
 ## 📩 For Website Owners / Someone that want to improve Mango
 
