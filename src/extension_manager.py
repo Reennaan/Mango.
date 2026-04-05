@@ -17,6 +17,7 @@ EXTENSIONS_DIR = _BASE / "extensions"
 EXTENSIONS_DIR.mkdir(exist_ok=True)
 INSTALLED_FILE = EXTENSIONS_DIR / ".installed.json"
 INDEX_URL = "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/extensions_index.json"
+APP_VERSION_URL = "https://raw.githubusercontent.com/Reennaan/plugins/refs/heads/master/main/app_update.json"
 
 
 logging.basicConfig(
@@ -47,6 +48,15 @@ def _load_installed():
 
 def _save_installed(data):
     INSTALLED_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+def fetch_app_version():
+    try:
+        return json.loads(_http_get(APP_VERSION_URL))
+    except Exception as exc:
+        print("[ExtensionManager] version not found")
+        return[]
+
+
 
 def fetch_available_extensions():
     try:
