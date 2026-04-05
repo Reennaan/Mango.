@@ -7,6 +7,8 @@ window.addEventListener('pywebviewready', initSources);
 
 let toastHideTimeout = null;
 let currentProviderName = "";
+let favoriteItems = [];
+let customCollections = {};
 
 
 
@@ -14,6 +16,7 @@ window.addEventListener('pywebviewready', () => {
     initSources();
     loadRecents();
     loadFav();
+    versionCeck();
 });
 
 async function initSources(){
@@ -30,6 +33,26 @@ async function initSources(){
         console.error("initSources:", e);
     }
 }
+
+async function versionCeck() {
+    const newVersion = await window.pywebview.api.version_check();
+    if(!newVersion)return
+    const p = document.querySelector(".app-version")
+    p.innerHTML = `
+    <span class="update-link">
+        a new version is available
+        </span>
+    `;
+    document.querySelector(".update-link").addEventListener("click", () => {
+    window.pywebview.api.open_external(newVersion);
+});
+    
+}
+
+function openExternal(url) {
+    window.pywebview.api.open_external(url);
+}
+
 
 async function isinstaled(provider) {
     if (!provider) return false;
@@ -54,9 +77,6 @@ async function loadRecents() {
     try {
         const recents = await window.pywebview.api.getRecents();
         container.innerHTML = "";
-        const info = `
-       
-          `
         document.querySelector(".recent-info").style.display = "flex"
         
 
@@ -76,8 +96,8 @@ async function loadRecents() {
 async function loadFav() {
    
     try{
-        const fav = await window.pywebview.api.getFav();
-        renderFavoritePreview(fav);
+        await syncCollectionsState();
+        renderFavoritePreview();
 
     }catch (e){
         console.log("deu merda no fav")
@@ -86,6 +106,43 @@ async function loadFav() {
     
 }
 
+}
+
+async function syncCollectionsState() {
+    const raw = await window.pywebview.api.getCollectionsData();
+    const data = JSON.parse(raw || "{}");
+
+    favoriteItems = Array.isArray(data.favorites) ? data.favorites : [];
+    customCollections = data.collections && typeof data.collections === "object"
+        ? data.collections
+        : {};
+
+    return data;
+}
+
+function getCustomCollectionNames() {
+    return Object.keys(customCollections);
+}
+
+function getCollectionItems(kind, name) {
+    if (kind === "favorites") {
+        return favoriteItems;
+    }
+
+    const items = customCollections[name];
+    return Array.isArray(items) ? items : [];
+}
+
+function isLinkInFavorites(link) {
+    return favoriteItems.some((item) => item.link === link);
+}
+
+function isLinkInCollection(name, link) {
+    return getCollectionItems("custom", name).some((item) => item.link === link);
+}
+
+function isLinkInCustomCollections(link) {
+    return getCustomCollectionNames().some((name) => isLinkInCollection(name, link));
 }
 
 function createFavoritePreviewImage(manga) {
@@ -100,23 +157,381 @@ function createFavoritePreviewImage(manga) {
     return img;
 }
 
-function renderFavoritePreview(favorites) {
+function buildCollectionCard(name, items, kind) {
+    const folder = document.createElement("div");
+    folder.className = "fav-folder";
+
+    const title = document.createElement("h2");
+    title.className = "section-title folder-name";
+    title.dataset.folderKind = kind;
+    title.dataset.folderName = name;
+    title.textContent = name;
+
+    
+
+
+    const grid = document.createElement("div");
+    grid.className = "grid-cover";
+
+    const preview = document.createElement("div");
+    preview.className = "manga-item";
+
+
+    
+
+    if (items.length) {
+        items.slice(0, 6).forEach((manga) => {
+            preview.appendChild(createFavoritePreviewImage(manga));
+        });
+    } else {
+        const empty = document.createElement("p");
+        empty.className = "folder-preview-empty";
+        //empty.textContent = kind === "favorites" ? "No favorites yet." : "No manga yet.";
+        preview.appendChild(empty);
+    }
+
+    grid.appendChild(preview);
+    folder.appendChild(title);
+    folder.appendChild(grid);
+
+    if(kind === "custom"){
+        
+        folder.insertAdjacentHTML('beforeend', `<div class="folder-edit-button">${editIcon}</div>`);
+        const editFolderButton = folder.querySelector(".folder-edit-button")
+        const editText = folder.querySelector(".folder-name")
+        const oldName = editText.textContent
+        if(editFolderButton){
+
+            editFolderButton.addEventListener("click", async (e) =>{
+                e.stopPropagation();
+                editText.setAttribute('contentEditable', 'true')
+                editText.focus();
+            })
+
+            editText.addEventListener("blur", () => {
+                editText.contentEditable = "false";
+                editText.classList.remove("editing");
+                
+                const newName = editText.textContent.trim();
+                console.log("Salvar novo nome:", newName);
+                window.pywebview.api.editCollection(oldName,newName)
+            });
+
+            editText.addEventListener("keydown", async (e) => {
+            
+                if (e.key === "Enter") {
+                    e.preventDefault(); 
+                    editText.blur();
+                    await syncCollectionsState();
+                    renderFavoritePreview();    
+                }
+              
+
+        });
+
+            
+        }
+
+
+        folder.insertAdjacentHTML('beforeend', `<div class="folder-delete-button">${trashIcon}</div>`);
+        const deleteFolderButton = folder.querySelector(".folder-delete-button")
+        if(deleteFolderButton){
+            deleteFolderButton.addEventListener("click", async (e) => {
+                e.stopImmediatePropagation();
+                await deleteFolder(name)
+            });
+
+        }
+      
+    }
+
+   
+
+
+    
+    return folder;
+}
+
+async function deleteFolder(name){
+    try {
+        const raw = await window.pywebview.api.deleteCollection(name);
+            const result = JSON.parse(raw);
+            showToast(result.message);
+
+            if (result.ok) {
+                await syncCollectionsState();
+                renderFavoritePreview();
+                
+            }
+        } catch (error) {
+            console.error("failed to delete folder:", error);
+            showToast("failed to delete folder");
+        }
+}
+
+function renderFavoritePreview(favorites = favoriteItems) {
+    favoriteItems = Array.isArray(favorites) ? favorites : favoriteItems;
+
     const favContainer = document.querySelector(".fav-container");
-    const preview = document.querySelector(".manga-item");
-    if (!favContainer || !preview) return;
+    const grid = document.querySelector(".collections-grid");
+    if (!favContainer || !grid) return;
 
-    const items = Array.isArray(favorites) ? favorites : [];
-    preview.innerHTML = "";
+    grid.innerHTML = "";
+    favContainer.style.display = "block";
 
-    if (!items.length) {
-        favContainer.style.display = "none";
+    grid.appendChild(buildCollectionCard("Favorites", favoriteItems, "favorites"));
+
+    getCustomCollectionNames().forEach((name) => {
+        grid.appendChild(buildCollectionCard(name, getCollectionItems("custom", name), "custom"));
+    });
+}
+
+function syncFavoriteButtonState(button, isFavorite) {
+    if (!button) return;
+    button.classList.toggle("fill", isFavorite);
+    button.innerHTML = isFavorite ? bookmarkFilledSvg : bookmarkOutlineSvg;
+}
+
+function syncCollectionBookmarkState(button, isSaved) {
+    if (!button) return;
+    button.classList.toggle("fill-bookmark", isSaved);
+    button.innerHTML = isSaved ? collectionBookmarkFilledSvg : collectionBookmarkOutlineSvg;
+}
+
+function closeCollectionPicker() {
+    document.querySelector(".collection-picker-overlay")?.remove();
+}
+
+function closeCreateFolderDialog() {
+    document.querySelector(".create-folder-overlay")?.remove();
+}
+
+function openCreateFolderDialog() {
+    closeCreateFolderDialog();
+
+    const overlay = document.createElement("div");
+    overlay.className = "create-folder-overlay";
+
+    const dialog = document.createElement("div");
+    dialog.className = "create-folder-dialog collection-picker-dialog";
+
+    const title = document.createElement("h3");
+    title.className = "create-folder-title";
+    title.textContent = "Create folder";
+
+    const subtitle = document.createElement("p");
+    subtitle.className = "create-folder-subtitle";
+    subtitle.textContent = "Choose a name for your new manga collection.";
+
+    const form = document.createElement("form");
+    form.className = "create-folder-form";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "create-folder-input input-field search-input";
+    input.name = "folder-name";
+    input.maxLength = 17;
+    input.placeholder = "Folder name";
+    input.autocomplete = "off";
+
+    const helper = document.createElement("p");
+    helper.className = "create-folder-helper";
+    helper.textContent = "Up to 17 characters.";
+
+    const actions = document.createElement("div");
+    actions.className = "create-folder-actions";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className = "create-folder-button-secondary";
+    cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", closeCreateFolderDialog);
+
+    const submitButton = document.createElement("button");
+    submitButton.type = "submit";
+    submitButton.className = "create-folder-button-primary";
+    submitButton.textContent = "Create";
+
+    actions.appendChild(cancelButton);
+    actions.appendChild(submitButton);
+    form.appendChild(input);
+    form.appendChild(helper);
+    form.appendChild(actions);
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const folderName = input.value.trim();
+
+        if (!folderName) {
+            helper.textContent = "Type a folder name.";
+            helper.classList.add("is-error");
+            input.focus();
+            return;
+        }
+
+        submitButton.disabled = true;
+        cancelButton.disabled = true;
+
+        try {
+            const raw = await window.pywebview.api.createCollection(folderName);
+            const result = JSON.parse(raw);
+
+            if (!result.ok) {
+                helper.textContent = result.message;
+                helper.classList.add("is-error");
+                input.focus();
+                input.select();
+                return;
+            }
+
+            await syncCollectionsState();
+            renderFavoritePreview();
+            closeCreateFolderDialog();
+            showToast(result.message);
+        } catch (error) {
+            console.error("failed to create folder:", error);
+            helper.textContent = "Failed to create folder.";
+            helper.classList.add("is-error");
+        } finally {
+            submitButton.disabled = false;
+            cancelButton.disabled = false;
+        }
+    });
+
+    input.addEventListener("input", () => {
+        helper.textContent = "Up to 17 characters.";
+        helper.classList.remove("is-error");
+    });
+
+    dialog.appendChild(title);
+    dialog.appendChild(subtitle);
+    dialog.appendChild(form);
+    overlay.appendChild(dialog);
+
+    overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+            closeCreateFolderDialog();
+        }
+    });
+
+    
+    document.body.appendChild(overlay);
+    input.focus();
+}
+
+async function openCollectionPicker(bookmarkButton) {
+    await syncCollectionsState();
+
+    const folderNames = getCustomCollectionNames();
+    if (!folderNames.length) {
+        showToast("create a folder first");
         return;
     }
 
-    favContainer.style.display = "block";
-    items.slice(0, 6).forEach((manga) => {
-        preview.appendChild(createFavoritePreviewImage(manga));
+    const rawData = bookmarkButton.getAttribute("data-manga");
+    if (!rawData) return;
+
+    const manga = JSON.parse(rawData);
+    const provider = bookmarkButton.getAttribute("data-provider") || manga.currentSource || currentProviderName;
+    const payload = {
+        ...manga,
+        currentSource: provider,
+    };
+
+    closeCollectionPicker();
+
+    const overlay = document.createElement("div");
+    overlay.className = "collection-picker-overlay";
+
+    const dialog = document.createElement("div");
+    dialog.className = "collection-picker-dialog";
+
+    const header = document.createElement("div");
+    header.className = "collection-picker-header";
+
+    const copy = document.createElement("div");
+    const title = document.createElement("h3");
+    title.className = "collection-picker-title";
+    title.textContent = "Save to folder";
+
+    copy.appendChild(title);
+    
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "extensions-close";
+    closeButton.textContent= "✕"
+    
+    closeButton.addEventListener("click", closeCollectionPicker);
+
+    header.appendChild(copy);
+    header.appendChild(closeButton);
+    dialog.appendChild(header);
+
+    const list = document.createElement("div");
+    list.className = "collection-picker-list";
+
+    folderNames.forEach((name) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "collection-picker-item";
+
+        const label = document.createElement("span");
+        label.textContent = name;
+
+        const status = document.createElement("span");
+        status.className = "collection-picker-status";
+
+        const syncItemState = () => {
+            const active = isLinkInCollection(name, payload.link);
+            item.classList.toggle("is-active", active);
+            status.textContent = active ? "Added" : "Add";
+            closeCollectionPicker();
+        };
+
+        syncItemState();
+        item.appendChild(label);
+        item.appendChild(status);
+
+        item.addEventListener("click", async () => {
+            item.disabled = true;
+
+            try {
+                const raw = isLinkInCollection(name, payload.link)
+                    ? await window.pywebview.api.removeFromCollection(name, payload.link)
+                    : await window.pywebview.api.addToCollection(name, JSON.stringify(payload));
+
+                const result = JSON.parse(raw);
+                showToast(result.message);
+
+                if (result.ok) {
+                    await syncCollectionsState();
+                    renderFavoritePreview();
+                    syncItemState();
+                    syncCollectionBookmarkState(
+                        bookmarkButton,
+                        isLinkInCustomCollections(payload.link),
+                    );
+                }
+            } catch (error) {
+                console.error("failed to update collection:", error);
+                showToast("failed to update folder");
+            } finally {
+                item.disabled = false;
+            }
+        });
+
+        list.appendChild(item);
     });
+
+    dialog.appendChild(list);
+    overlay.appendChild(dialog);
+    overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+            closeCollectionPicker();
+        }
+    });
+    document.body.appendChild(overlay);
 }
 
 
@@ -488,22 +903,39 @@ document.addEventListener('click', async function (event) {
 });
 
 document.addEventListener('click', async function (event) {
+    const createFolderButton = event.target.closest('.createfolder-button');
+    if (!createFolderButton) return;
+
+    openCreateFolderDialog();
+});
+
+document.addEventListener('click', async function (event) {
+    const folderName = event.target.closest('.folder-name');
+    if (!folderName) return;
+
+    await openFolder(folderName);
+});
+
+document.addEventListener('click', async function (event) {
     const favButton = event.target.closest('.favButton');
     if (!favButton) return;
 
-    const titleEl = document.querySelector(".manga-title-large");
-    const title = titleEl ? titleEl.textContent : "";  // evita o erro
+    const saved = await saveFavorite(favButton);
+    syncFavoriteButtonState(
+        favButton,
+        saved || isLinkInFavorites(JSON.parse(favButton.getAttribute('data-manga')).link),
+    );
+});
+
+document.addEventListener('click', async function (event) {
+    const bookmarkButton = event.target.closest('.bookmark');
+    if (!bookmarkButton) return;
 
     try {
-        favButton.classList.toggle("fill");
-        favButton.innerHTML = favButton.classList.contains("fill")
-            ? bookmarkFilledSvg
-            : bookmarkOutlineSvg;
-        
-        if (title) showToast(`${title} addeded to favorites`);
+        await openCollectionPicker(bookmarkButton);
     } catch (error) {
-        console.error('Fail to add as favorite:', error);
-        showToast('Fail to add as favorite:', error);
+        console.error('failed to open collection picker:', error);
+        showToast('failed to open folder picker');
     }
 });
 
@@ -599,10 +1031,11 @@ async function buildMangaInfo(manga) {
                 showToast(`${manga.currentSource} not found. Make sure that the source is installed`)
                 
             }else{
-                renderMangaDetails(manga);
+                
                 if (manga.currentSource) {
                     await setActiveProvider(manga.currentSource, false);
                 }
+                renderMangaDetails(manga);
             }
 
 
@@ -632,6 +1065,8 @@ const chapterDefaultIconSvg = `
 const chapterLoadingIconDataUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --%3E%3Cpath fill='%23fff' stroke='%23fff' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E";
 const bookmarkOutlineSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
 const bookmarkFilledSvg = `<svg xmlns="http://www.w3.org/2000/svg"class="fill" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path></svg>`;
+const collectionBookmarkOutlineSvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke="currentColor"><path d="M12 13V7M9 10H15M19 21V7.8C19 6.11984 19 5.27976 18.673 4.63803C18.3854 4.07354 17.9265 3.6146 17.362 3.32698C16.7202 3 15.8802 3 14.2 3H9.8C8.11984 3 7.27976 3 6.63803 3.32698C6.07354 3.6146 5.6146 4.07354 5.32698 4.63803C5 5.27976 5 6.11984 5 7.8V21L12 17L19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+const collectionBookmarkFilledSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"><path d="M19 21 12 17 5 21V7.8c0-1.68 0-2.52.327-3.162A3 3 0 0 1 6.638 3.327C7.28 3 8.12 3 9.8 3h4.4c1.68 0 2.52 0 3.162.327a3 3 0 0 1 1.311 1.311C19 5.28 19 6.12 19 7.8V21Z"></path></svg>`;
 
 function setChapterDownloadIcon(chapterIndex, isLoading) {
     const iconContainer = document.querySelector(`.chapter-item[data-chapter-index="${chapterIndex}"] .chapter-download-icon`);
@@ -641,7 +1076,8 @@ function setChapterDownloadIcon(chapterIndex, isLoading) {
         iconContainer.innerHTML = `<img src="${chapterLoadingIconDataUrl}" alt="downloading"  style="width:14px;height:14px;display:block;">`;
         return;
     }
-
+    const poing = new Audio('audio/poing.mp3')
+    poing.play();
     iconContainer.innerHTML = chapterDefaultIconSvg;
 }
 
@@ -760,8 +1196,12 @@ async function renderMangaDetails(manga) {
     const descText = Array.isArray(desc) ? desc.join(" ") : (desc || "Description not available.");
     const descClass = descText.length > 550 ? "manga-desc custom-scrollbar has-scroll" : "manga-desc";
     const titleText = typeof title === "string" && title.length > 45 ? `${title.slice(0, 45)}...` : title;
+    const providerName = manga.currentSource || currentProviderName;
+    const mangaDataAttr = JSON.stringify(manga).replace(/'/g, "&apos;");
+    const isFavorite = isLinkInFavorites(manga.link);
+    const isInCustomFolder = isLinkInCustomCollections(manga.link);
 
-    saveRecent(manga, currentProviderName)
+    saveRecent(manga, providerName)
 
 
     detailView.innerHTML = `
@@ -804,8 +1244,8 @@ async function renderMangaDetails(manga) {
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <h3 class="chapters-title-page">Chapters</h3>
                         <div style="display: flex; gap: 0.5rem; color: rgba(255,255,255,0.2);">
-                            <div class="favButton" data-manga='${JSON.stringify(manga).replace(/'/g, "&apos;")}' data-provider='${currentProviderName}' onclick="saveFavorite(this)">
-                                ${manga.favorite ? bookmarkFilledSvg : bookmarkOutlineSvg}
+                            <div class="favButton ${isFavorite ? "fill" : ""}" data-manga='${mangaDataAttr}' data-provider='${providerName}'>
+                                ${isFavorite ? bookmarkFilledSvg : bookmarkOutlineSvg}
                             </div>
 
                             <div class="align-button">
@@ -814,8 +1254,8 @@ async function renderMangaDetails(manga) {
                             <div class="folder-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder" style="pointer-events: all; cursor: pointer;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                             </div>
-                            <div class="bookmark">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 13V7M9 10H15M19 21V7.8C19 6.11984 19 5.27976 18.673 4.63803C18.3854 4.07354 17.9265 3.6146 17.362 3.32698C16.7202 3 15.8802 3 14.2 3H9.8C8.11984 3 7.27976 3 6.63803 3.32698C6.07354 3.6146 5.6146 4.07354 5.32698 4.63803C5 5.27976 5 6.11984 5 7.8V21L12 17L19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                            <div class="bookmark ${isInCustomFolder ? "fill-bookmark" : ""}" data-manga='${mangaDataAttr}' data-provider='${providerName}'>
+                                ${isInCustomFolder ? collectionBookmarkFilledSvg : collectionBookmarkOutlineSvg}
                             </div>
                         </div>
                     </div>
@@ -873,9 +1313,6 @@ async function saveFavorite(data){
     let manga
     let provider
     
-
-
-
     if (data && typeof data.getAttribute === 'function') {
         const rawData = data.getAttribute('data-manga');
         manga = JSON.parse(rawData);
@@ -888,14 +1325,15 @@ async function saveFavorite(data){
 
 
     try {
-        const currentFav = await window.pywebview.api.getFav();
-        if (Array.isArray(currentFav) && currentFav.some((item) => item.link === manga.link)) {
+        await syncCollectionsState();
+
+        if (isLinkInFavorites(manga.link)) {
             showToast(`${manga.title} is already in favorites`);
-            renderFavoritePreview(currentFav);
+            renderFavoritePreview();
             return false;
         }
 
-        if (Array.isArray(currentFav) && currentFav.length >= 30) {
+        if (favoriteItems.length >= 30) {
             showToast("you have reached the favorites limit");
             return false;
         }
@@ -907,8 +1345,9 @@ async function saveFavorite(data){
         };
 
         await window.pywebview.api.saveFav(fav);
-        const updatedFav = await window.pywebview.api.getFav();
-        renderFavoritePreview(updatedFav);
+        await syncCollectionsState();
+        renderFavoritePreview();
+        showToast(`${manga.title} added to favorites`);
         return true;
     } catch (error) {
         console.error("fail to save favorite:", error);
@@ -919,28 +1358,29 @@ async function saveFavorite(data){
 }
 const returnIcon = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.9998 8L6 14L12.9998 21" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 14H28.9938C35.8768 14 41.7221 19.6204 41.9904 26.5C42.2739 33.7696 36.2671 40 28.9938 40H11.9984" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
 const trashIcon = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
+const editIcon = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="edit"> <g> <path d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <polygon fill="none" points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon> </g> </g> </g> </g></svg>`
 
 async function openFolder(folder){
     const detailView = document.getElementById('detail-view');
-    const folderName = folder.textContent;
-
-    const fav = await window.pywebview.api.getFav();
-    console.log(fav)
-
-    
-  
-
-
     if (!detailView) return;
-    detailView.innerHTML = ""
+    await syncCollectionsState();
+
+    const folderName = folder?.dataset?.folderName || folder?.textContent?.trim() || "Favorites";
+    const folderKind = folder?.dataset?.folderKind || (folderName === "Favorites" ? "favorites" : "custom");
+    
+
+
+    const folderItems = [...getCollectionItems(folderKind, folderName)];
+
     const folderScreen = `
         <div class="open-folder-container custom-scrollbar">
             <div class="folder-options">  
                 <div class="return-button">${returnIcon}</div>
                 <div class="trash-button">${trashIcon}</div>
+                <h2 class="section-title" id="folder-page-name"></h2>
             </div>
-            <h2 class="section-title" id="folder-page-name">${folderName}</h2>
             
+             
             <div class=grid-folder-page>
                 <div class="mangaCardFolder">
                     
@@ -949,26 +1389,30 @@ async function openFolder(folder){
         </div>
     `
     detailView.innerHTML = `${folderScreen}`
+    document.getElementById("folder-page-name").textContent = folderName
     const card = document.querySelector(".mangaCardFolder")
     const trashButton = document.querySelector(".trash-button")
+    
     const renderEmptyFolderState = () => {
         if (card.childElementCount > 0) return;
         card.classList.remove("is-delete-mode");
         trashButton.classList.remove("is-active");
-        card.innerHTML = `<p class="folder-empty">No favorites saved yet.</p>`;
+        card.innerHTML = `<p class="folder-empty">${folderKind === "favorites" ? "" : ""}</p>`;
     };
     document.querySelector(".return-button").addEventListener("click", () =>{ clearDetailView()})
     trashButton.addEventListener("click", () => {
         card.classList.toggle("is-delete-mode")
         trashButton.classList.toggle("is-active")
     })
+
+
     
-    if (!fav.length) {
+    if (!folderItems.length) {
         renderEmptyFolderState()
         return
     }
 
-    fav.forEach(async (manga) =>{
+    folderItems.forEach(async (manga) =>{
         let installed = true;
         if(manga.currentSource){
             installed = await isinstaled(manga.currentSource);
@@ -990,14 +1434,16 @@ async function openFolder(folder){
             event.stopPropagation()
             deleteOption.disabled = true
             try {
-                const raw = await window.pywebview.api.removeFav(manga.link)
+                const raw = folderKind === "favorites"
+                    ? await window.pywebview.api.removeFav(manga.link)
+                    : await window.pywebview.api.removeFromCollection(folderName, manga.link)
                 const result = JSON.parse(raw)
                 showToast(result.message)
                 if (!result.ok) return
 
                 folderCard.remove()
-                const updatedFav = await window.pywebview.api.getFav()
-                renderFavoritePreview(updatedFav)
+                await syncCollectionsState()
+                renderFavoritePreview()
                 renderEmptyFolderState()
             } catch (error) {
                 console.error("fail to delete favorite:", error)
