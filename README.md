@@ -39,8 +39,8 @@
 2. Install extensions
 3. Start reading
 
--if you have any problem, make sure that you have webview2 installed
-
+- if you have any problem, make sure that you have webview2 installed (It usually comes pre-installed on windows)
+- oficial link : https://developer.microsoft.com/pt-br/microsoft-edge/webview2
 ---
 
 ##  For linux users:
