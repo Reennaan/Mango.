@@ -7,7 +7,8 @@
 
 ## Preview
 
-![preview](./assets/preview2.png)
+<img width="1265" height="710" alt="image" src="https://github.com/user-attachments/assets/007da527-3c53-49b3-9506-3b084a14758e" />
+
 
 ---
 
