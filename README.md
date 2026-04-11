@@ -28,7 +28,6 @@
 **[Download latest version](../../releases/latest)**
 
 - Windows (.exe)
-- No installation required (portable)
 
 ---
 
