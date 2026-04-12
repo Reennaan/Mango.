@@ -54,6 +54,17 @@ Mango is powered by extensions.
 - Add/remove sources anytime
 - Fully modular
 
+## Windows defender SmartScreen case
+
+Usually desktop apps have a digital signature that classifies the app as trusted, but unfortunately, that signature ins't free, and mango doesn't have any signature yet. but this warning will stop showing up if the windows defender identifies mango as a secure app. and that will happen when mango reaches a certain number of downloads to be recognized by the windows defender system
+
+<img width="534" height="499" alt="image" src="https://github.com/user-attachments/assets/281391d0-0ab3-403b-835d-85c990b19cae" />
+
+if that happens, don't panic just click "more info" and then “run anyway”
+
+that is the result of submitting the file to the Windows Defender website (this warning shouldn't appear, but it does in some cases)
+https://www.microsoft.com/en-us/wdsi/submission/b523b455-fc13-4e87-b726-f0974c239aeb
+
 ## Dont sue me, i dont have money to pay...
 
 > No extensions = no content
